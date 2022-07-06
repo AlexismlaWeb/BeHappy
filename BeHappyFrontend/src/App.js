@@ -16,7 +16,7 @@ function App() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Learn React LAURA t moche jlesrls
+          jai comirs ou pa{" "}
         </a>
       </header>
     </div>
