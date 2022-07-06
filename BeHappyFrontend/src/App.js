@@ -16,7 +16,7 @@ function App() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          jai comirs ou pa{" "}
+          cganzjegiy
         </a>
       </header>
     </div>
