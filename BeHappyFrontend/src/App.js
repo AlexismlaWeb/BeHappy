@@ -1,25 +1,28 @@
-import logo from "./logo.svg";
+import React from "react";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import "./App.css";
+import ScreenWelcome from "./ScreenWelcome";
+import ScreenRandom from "./ScreenRandom";
+import ScreenProfile from "./ScreenProfile";
+import ScreenSearch from "./ScreenSearch";
+
+import token from "./reducers/token";
+import { Provider } from "react-redux";
+import { createStore, combineReducers } from "redux";
+const store = createStore(combineReducers({ token }));
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload. COUCOU
-        </p>
-
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          cganzjegiy
-        </a>
-      </header>
-    </div>
+    <Provider store={store}>
+      <Router>
+        <Switch>
+          <Route exact path="/" component={ScreenWelcome} />
+          <Route exact path="/screenrandom" component={ScreenRandom} />
+          <Route exact path="/screenprofile" component={ScreenProfile} />
+          <Route exact path="/screensearch" component={ScreenSearch} />
+        </Switch>
+      </Router>
+    </Provider>
   );
 }
 
