@@ -1,3 +1,7 @@
 export default function (token = "", action) {
-  return token;
+  if (action.type == "addToken") {
+    return action.token;
+  } else {
+    return token;
+  }
 }
