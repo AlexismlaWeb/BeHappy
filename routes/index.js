@@ -1,96 +1,86 @@
 var express = require("express");
 var router = express.Router();
 
-var uid2 = require("uid2");
-var bcrypt = require("bcrypt");
+var request = require("sync-request");
+const { listenerCount } = require("../models/users");
 
-var userModel = require("../models/users");
+// SEARCH A MOVIE //
+router.post("/searchMovie", function (req, res, next) {
+  let encodedQuery = encodeURI(req.body.queryFromFront);
 
-router.post("/sign-up", async function (req, res, next) {
-  var error = [];
-  var result = false;
-  var saveUser = null;
-  var token = null;
+  var data = request(
+    "GET",
+    `https://api.themoviedb.org/3/search/movie?api_key=b3b092670c7516d9cd1ef6866ace306d&language=en-US&query=${encodedQuery}&page=1&include_adult=false`
+  );
+  var dataParse = JSON.parse(data.body);
 
-  const dataEmail = await userModel.findOne({
-    email: req.body.emailFromFront,
-  });
-
-  if (dataEmail != null) {
-    error.push("There is already an account with this address email");
+  let moviesList = [];
+  for (let element of dataParse.results) {
+    moviesList.push(element.original_title);
   }
-
-  const dataUsername = await userModel.findOne({
-    username: req.body.usernameFromFront,
-  });
-
-  if (dataUsername != null) {
-    error.push("There is already an account with this pseudo");
-  }
-
-  const regex = /^\w+([.-]?\w+)@\w+([.-]?\w+)(.\w{2,3})+$/;
-
-  if (!email.match(regex)) {
-    error.push("Please enter an email in the correct format");
-  }
-
-  if (
-    req.body.usernameFromFront == "" ||
-    req.body.emailFromFront == "" ||
-    req.body.passwordFromFront == ""
-  ) {
-    error.push("Empty fields");
-  }
-
-  if (error.length == 0) {
-    var hash = bcrypt.hashSync(req.body.passwordFromFront, 10);
-    var newUser = new userModel({
-      username: req.body.usernameFromFront,
-      email: req.body.emailFromFront,
-      password: hash,
-      token: uid2(32),
-    });
-
-    saveUser = await newUser.save();
-
-    if (saveUser) {
-      result = true;
-      token = saveUser.token;
-    }
-  }
-
-  res.json({ result, saveUser, error, token });
+  console.log("moviesList, ", moviesList);
+  res.json(dataParse);
 });
 
-router.post("/sign-in", async function (req, res, next) {
-  var result = false;
-  var user = null;
-  var error = [];
-  var token = null;
+// SEARCH A SERIES //
+router.post("/searchSeries", function (req, res, next) {
+  let encodedQuery = encodeURI(req.body.queryFromFront);
 
-  if (req.body.emailFromFront == "" || req.body.passwordFromFront == "") {
-    error.push("Empty fields");
+  var data = request(
+    "GET",
+    `https://api.themoviedb.org/3/search/tv?api_key=b3b092670c7516d9cd1ef6866ace306d&language=en-US&page=1&query=${encodedQuery}&include_adult=false`
+  );
+  var dataParse = JSON.parse(data.body);
+
+  let seriesList = [];
+  for (let element of dataParse.results) {
+    seriesList.push(element.original_name);
   }
-
-  if (error.length == 0) {
-    user = await userModel.findOne({
-      email: req.body.emailFromFront,
-    });
-
-    if (user) {
-      if (bcrypt.compareSync(req.body.passwordFromFront, user.password)) {
-        result = true;
-        token = user.token;
-      } else {
-        result = false;
-        error.push("Invalid password");
-      }
-    } else {
-      error.push("There is no account with this email address");
-    }
-  }
-
-  res.json({ result, user, error, token });
+  console.log("seriesList, ", seriesList);
+  res.json(dataParse);
 });
+
+// SEARCH A BOOK //
+router.post("/searchBook", function (req, res, next) {
+  let APIkey = "AIzaSyDHHhDC57Jk0lZABqbjA0mvuH3NnC0zyUg";
+  let encodedQuery = encodeURI(req.body.queryFromFront);
+
+  var data = request(
+    "GET",
+    `https://www.googleapis.com/books/v1/volumes?q=${encodedQuery}&key=${APIkey}`
+  );
+
+  var dataParse = JSON.parse(data.body);
+  console.log("dataParse =>", dataParse);
+
+  console.log("dataParse =>", dataParse);
+
+  let booksList = [];
+  for (let element of dataParse.items) {
+    booksList.push(element.volumeInfo.title);
+  }
+  console.log("booksList, ", booksList);
+  res.json(dataParse);
+});
+
+// SEARCH A PODCAST //
+// router.post("/searchPodcast", function (req, res, next) {
+//   let APIkey = "AIzaSyDHHhDC57Jk0lZABqbjA0mvuH3NnC0zyUg";
+//   let encodedQuery = encodeURI(req.body.queryFromFront);
+
+//   var data = request(
+//     "GET",
+//     `https://www.googleapis.com/books/v1/volumes?q=${encodedQuery}&key=${APIkey}`
+//   );
+
+//   var dataParse = JSON.parse(data.body);
+
+//   let podcastsList = [];
+//   for (let element of dataParse.items) {
+//     podcastsList.push(element.volumeInfo.title);
+//   }
+//   console.log("podcastsList, ", podcastsList);
+//   res.json(dataParse);
+// });
 
 module.exports = router;

@@ -6,6 +6,7 @@ var bcrypt = require("bcrypt");
 
 var userModel = require("../models/users");
 
+// SIGN-UP
 router.post("/sign-up", async function (req, res, next) {
   var error = [];
   var result = false;
@@ -63,6 +64,7 @@ router.post("/sign-up", async function (req, res, next) {
   res.json({ result, saveUser, error, token });
 });
 
+// SIGN-IN
 router.post("/sign-in", async function (req, res, next) {
   var result = false;
   var user = null;
