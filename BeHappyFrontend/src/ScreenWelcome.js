@@ -122,6 +122,7 @@ function ScreenWelcome(props) {
         >
           Sign-up
         </Button>
+       
       </div>
     </div>
   );

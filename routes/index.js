@@ -4,6 +4,7 @@ var router = express.Router();
 
 var request = require("sync-request");
 const { listenerCount } = require("../models/users");
+const { Client } = require("podcast-api");
 
 // SEARCH A MOVIE //
 router.post("/searchMovie", function (req, res, next) {
@@ -64,7 +65,7 @@ router.post("/searchBook", function (req, res, next) {
 // SEARCH A PODCAST //
 router.post("/searchPodcast", function (req, res, next) {
   let encodedQuery = encodeURI(req.body.queryFromFront);
-  const { Client } = require("podcast-api");
+
   const client = Client({ apiKey: "5ab7d2dd84224806a056cfe9a777dd7c" });
 
   let podcastsList = [];
@@ -81,15 +82,28 @@ router.post("/searchPodcast", function (req, res, next) {
       for (let element of response.data.results) {
         podcastsList.push(element.title_original);
       }
-      console.log("podcastsList dans client", podcastsList);
+      console.log("dans client =>", podcastsList);
     })
     .catch((error) => {
       console.log("error", error);
     });
 
-  console.log("podcastsList fin de la route ", podcastsList);
+  console.log("après client =>", podcastsList);
 
   res.json(podcastsList);
 });
+
+// SEARCH A PODCAST (2) //
+// router.post("/searchPodcast", function (req, res, next) {
+//   let encodedQuery = encodeURI(req.body.queryFromFront);
+
+//   var data = request(
+//     "GET",
+//     `https://listen-api.listennotes.com/api/v2/search?q=${encodedQuery}&type=episode&key=5ab7d2dd84224806a056cfe9a777dd7c`
+//   );
+
+//   console.log("data => ", data);
+//   res.json(data);
+// });
 
 module.exports = router;

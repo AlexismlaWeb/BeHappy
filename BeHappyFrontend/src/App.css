@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Abril+Fatface&display=swap");
+
 .App {
   text-align: center;
 }
@@ -94,4 +96,88 @@ h4 {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+}
+
+.Button {
+  box-shadow: 10px 10px #ffd2ee;
+  background-color: white;
+  border: 1px solid black;
+  color: black;
+  padding: 5px 15px;
+  margin: 15px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 14px;
+  font-family: Abril Fatface;
+}
+
+.Button-Submit {
+  background-color: white;
+  border: 1px solid black;
+  color: black;
+  /* padding: 15px 32px; */
+  /* margin: 15px; */
+  text-align: center;
+  text-decoration: none;
+  font-size: 12px;
+  font-family: Abril Fatface;
+  height: 30px;
+}
+
+.Global {
+  display: flex;
+  flex-direction: column;
+  /* background-color: red; */
+  justify-content: center;
+  align-items: center;
+}
+
+.Top {
+  display: flex;
+  /* background-color: red; */
+  justify-content: center;
+  font-size: 16px;
+  font-family: Abril Fatface;
+}
+
+.Middle {
+  display: flex;
+  flex-direction: column;
+  background-color: #ffd2ee;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.Bottom {
+  display: flex;
+  justify-content: center;
+}
+
+.Form {
+  width: 20%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.Text {
+  font-size: 14px;
+  font-family: Abril Fatface;
+  text-align: center;
+  margin: 4px;
+}
+
+.Title {
+  font-size: 18px;
+  font-family: Abril Fatface;
+  text-align: center;
+  margin-top: 30px;
+}
+
+.Input {
+  width: 80%;
+  margin: 4px;
+  border: 1px solid black;
 }
