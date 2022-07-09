@@ -14,7 +14,9 @@
     "http-errors": "~1.6.3",
     "mongoose": "^6.4.3",
     "morgan": "~1.9.1",
+    "podcast-api": "^1.1.1",
     "sync-request": "^6.1.0",
-    "uid2": "^1.0.0"
+    "uid2": "^1.0.0",
+    "unirest": "^0.6.0"
   }
 }

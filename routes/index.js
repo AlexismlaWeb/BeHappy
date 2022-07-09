@@ -1,3 +1,4 @@
+const { response } = require("express");
 var express = require("express");
 var router = express.Router();
 
@@ -51,9 +52,6 @@ router.post("/searchBook", function (req, res, next) {
   );
 
   var dataParse = JSON.parse(data.body);
-  console.log("dataParse =>", dataParse);
-
-  console.log("dataParse =>", dataParse);
 
   let booksList = [];
   for (let element of dataParse.items) {
@@ -64,23 +62,34 @@ router.post("/searchBook", function (req, res, next) {
 });
 
 // SEARCH A PODCAST //
-// router.post("/searchPodcast", function (req, res, next) {
-//   let APIkey = "AIzaSyDHHhDC57Jk0lZABqbjA0mvuH3NnC0zyUg";
-//   let encodedQuery = encodeURI(req.body.queryFromFront);
+router.post("/searchPodcast", function (req, res, next) {
+  let encodedQuery = encodeURI(req.body.queryFromFront);
+  const { Client } = require("podcast-api");
+  const client = Client({ apiKey: "5ab7d2dd84224806a056cfe9a777dd7c" });
 
-//   var data = request(
-//     "GET",
-//     `https://www.googleapis.com/books/v1/volumes?q=${encodedQuery}&key=${APIkey}`
-//   );
+  let podcastsList = [];
 
-//   var dataParse = JSON.parse(data.body);
+  client
+    .search({
+      q: encodedQuery,
+      sort_by_date: 0,
+      type: "podcast",
+      language: "French",
+      safe_mode: 0,
+    })
+    .then((response) => {
+      for (let element of response.data.results) {
+        podcastsList.push(element.title_original);
+      }
+      console.log("podcastsList dans client", podcastsList);
+    })
+    .catch((error) => {
+      console.log("error", error);
+    });
 
-//   let podcastsList = [];
-//   for (let element of dataParse.items) {
-//     podcastsList.push(element.volumeInfo.title);
-//   }
-//   console.log("podcastsList, ", podcastsList);
-//   res.json(dataParse);
-// });
+  console.log("podcastsList fin de la route ", podcastsList);
+
+  res.json(podcastsList);
+});
 
 module.exports = router;
