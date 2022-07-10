@@ -1,3 +1,6 @@
+@import url("https://fonts.googleapis.com/css2?family=Abril+Fatface&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap");
+
 h4 {
   color: white;
   font-weight: bold;
@@ -69,6 +72,65 @@ h4 {
   justify-content: center;
 }
 
+/* TEMPLATE MAIN SCREENS */
+
+.Myaccount-Box {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-top: 10px;
+}
+
+.Avatar {
+  width: 50px;
+  border-radius: 100%;
+}
+
+.Myaccount-Link {
+  font-size: 14px;
+  font-family: Abril Fatface;
+  color: black;
+  display: flex;
+  align-items: center;
+  justify-content: right;
+  text-decoration-color: none;
+  margin-left: 10px;
+}
+
+.Myaccount-Link:hover {
+  color: black;
+}
+
+.Main-Row {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.Bottom {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* TEMPLATE TEXTS */
+
+.Title {
+  font-size: 16px;
+  font-family: Abril Fatface;
+  text-align: center;
+  margin: 5px;
+  margin-bottom: 10px;
+}
+
+.Text {
+  font-size: 12px;
+  font-family: Fredoka One;
+  text-align: center;
+  margin: 4px;
+}
+
+/* TEMPLATE BUTTONS */
+
 .Button-Shadow {
   font-size: 12px;
   background-color: white;
@@ -92,7 +154,10 @@ h4 {
   font-size: 12px;
   font-family: Abril Fatface;
   height: 30px;
+  margin-bottom: 5px;
 }
+
+/* SCREENSEARCH */
 
 .Form {
   display: flex;
@@ -101,36 +166,12 @@ h4 {
   align-items: center;
 }
 
-.Text {
-  font-size: 14px;
-  font-family: Abril Fatface;
-  text-align: center;
-  margin: 4px;
-}
-
-.Title {
-  font-size: 25px;
-  font-family: Abril Fatface;
-  text-align: center;
-  margin-top: 30px;
-}
-
 .Input {
   width: 80%;
-  height: 3%;
-  margin: 4px;
-  border: 1px solid black;
+  height: 35px;
+  margin: 3px;
 }
 
-.Myaccount {
-  font-size: 14px;
-  font-family: Abril Fatface;
-  text-align: bottom;
-  color: black;
-}
-
-.Bottom {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+/* COMMENTAIRES
+Iphone xs (Laura): 315 x 600 
+Template main screens : stocker la couleur de fond dans une variable dynamique pour pouvoir tout changer facilement*/
