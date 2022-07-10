@@ -239,6 +239,11 @@ h4 {
   flex-direction: column;
 }
 
+.Img {
+  max-width: 90%;
+  max-height: 100%;
+}
+
 /* COMMENTAIRES
 - Iphone xs (Laura): 315 x 600 
 - Template main screens : stocker la couleur de fond dans une variable dynamique pour pouvoir tout changer facilement

@@ -11,62 +11,128 @@ import { AiOutlineHeart } from "react-icons/ai";
 export default function ScreenRandom() {
   return (
     <Container fluid>
-      <Row
-        className="Top"
-        style={{ fontSize: "16px", fontFamily: "Abril Fatface" }}
-      >
-        <Col md={{ span: 1, offset: 11 }}>
-          <Link to="/screensigninup">
-            <p style={{ color: "black" }}>MY ACOUNT</p>
-          </Link>
+      <Row>
+        <Col xs="12" md="6" lg="4" className="Myaccount-Box">
+          <img src="../AvatarTest.png" className="Avatar" />
+          <Link className="Myaccount-Link">MY ACCOUNT</Link>
         </Col>
       </Row>
-      <Row style={{ backgroundColor: "#FFDBD0" }}>
-        <Col>
-          <h3 className="Title">Title</h3>
+      <Row className="Text" style={{ marginTop: "5%" }}>
+        <Col xs={4} md="6" lg="4">
+          <input type="radio" value="Music" name="type" /> MUSIC
         </Col>
-        <Row>
-          <Col>
-            <p className="Text">details iehjefphiofopbj</p>
-          </Col>
-        </Row>
-        <Row>
-          <Col className="d-flex align-items-center justify-content-center">
-            <img src="..\daftpunk.png" alt="daft-punk" className="Img" />
-          </Col>
-        </Row>
-        <Row className="d-flex align-items-center justify-content-center">
-          <Col
-            sm={1}
-            className="d-flex align-items-center justify-content-center"
-          >
-            <AiOutlineHeart style={{ fontSize: "40px" }} />
-          </Col>
-          <Col sm={2}>
-            <p className="">IT MAKES ME HAPPY!</p>
-            <p className="">ADD IT TO MY RECOMMENDATIONS</p>
-          </Col>
-        </Row>
+        <Col xs={4} md="6" lg="4">
+          <input type="radio" value="Movies" name="type" /> MOVIES
+        </Col>
+        <Col xs={4} md="6" lg="4">
+          <input type="radio" value="Series" name="type" /> SERIES
+        </Col>
+      </Row>
+      <Row className="Text">
+        <Col xs={4} md="6" lg="4">
+          <input type="radio" value="Books" name="type" /> BOOKS
+        </Col>
+        <Col xs={4} md="6" lg="4">
+          <input type="radio" value="Podcasts" name="type" /> PODCASTS
+        </Col>
+        <Col xs={4} md="6" lg="4">
+          <input type="radio" value="Other" name="type" /> OTHER
+        </Col>
+      </Row>
+
+      <Row className="Text">
+        <Col xs={12} md="6" lg="4">
+          <input type="radio" value="FollowedOnly" name="type" /> FROM FOLLOWED
+          LIST ONLY
+        </Col>
       </Row>
       <Row>
-        <Col xs="1" md="3" lg="4"></Col>
-        <Col
-          xs="10"
-          md="6"
-          lg="4"
-          className="Bottom"
-          style={{ margin: "20px" }}
-        >
+        <Col xs="12" md="6" lg="4" className="Bottom">
           <Button
             className="Button-Shadow"
             style={{
               boxShadow: "10px 10px #ffd2ee",
+              width: "50%",
+              height: "70%",
+            }}
+          >
+            UPDATE MY HAPPY LIST
+          </Button>
+          <Button
+            className="Button-Shadow"
+            style={{
+              boxShadow: "10px 10px #ffd2ee",
+              width: "50%",
+              height: "70%",
+            }}
+          >
+            EXPLORE OTHER HAPPY LIST
+          </Button>
+        </Col>
+      </Row>
+      <Row
+        style={{
+          backgroundColor: "#FFDBD0",
+          marginTop: "5%",
+          paddingTop: "10%",
+          paddingBottom: "20%",
+        }}
+      >
+        <Col xs={12} md={6} lg={4} style={{ marginTop: "5%" }}>
+          <h3 className="Title">GET LUCKY</h3>
+        </Col>
+        <Row>
+          <Col xs={12} sm={6} md={6} lg={4} style={{ marginBottom: "5%" }}>
+            <p className="Text">Daft Punck, Pharrell Williams, Nile Rodgers</p>
+          </Col>
+        </Row>
+        <Row>
+          <Col
+            xs={{ span: 11, offset: 1 }}
+            md={6}
+            lg={4}
+            style={{ marginBottom: "5%" }}
+          >
+            <img src="..\daftpunk.png" alt="daft-punk" className="Img" />
+          </Col>
+        </Row>
+        <Row>
+          <Col
+            xs={4}
+            sm={6}
+            md={6}
+            lg={4}
+            className="d-flex justify-content-center"
+          >
+            <AiOutlineHeart style={{ fontSize: "40px" }} />
+          </Col>
+          <Col xs={8} sm={6} md={6} lg={4} style={{ textAlign: "left" }}>
+            <p
+              style={{
+                fontFamily: "Fredoka One ",
+                fontSize: "10px",
+                fontWeight: "bold",
+              }}
+            >
+              IT MAKES ME HAPPY! ADD IT TO MY RECOMMENDATIONS
+            </p>
+          </Col>
+        </Row>
+      </Row>
+      <Row>
+        <Col xs="10" md="6" lg="4" className="Bottom" style={{ margin: "10%" }}>
+          <Button
+            className="Button-Shadow"
+            style={{
+              boxShadow: "10px 10px #ffd2ee",
+              width: "100%",
+              height: "100%",
+              fontSize: "20px",
             }}
           >
             SURPRISE ME!
           </Button>
         </Col>
-        <Col xs="1" md="3" lg="4" className="col3"></Col>
       </Row>
     </Container>
   );
