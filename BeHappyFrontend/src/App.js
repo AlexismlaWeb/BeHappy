@@ -5,6 +5,7 @@ import ScreenWelcome from "./ScreenWelcome";
 import ScreenRandom from "./ScreenRandom";
 import ScreenProfile from "./ScreenProfile";
 import ScreenSearch from "./ScreenSearch";
+import ScreenSignInUp from "./ScreenSignInUp";
 
 import token from "./reducers/token";
 import { Provider } from "react-redux";
@@ -17,6 +18,7 @@ function App() {
       <Router>
         <Switch>
           <Route exact path="/" component={ScreenWelcome} />
+          <Route exact path="/screensigninup" component={ScreenSignInUp} />
           <Route exact path="/screenrandom" component={ScreenRandom} />
           <Route exact path="/screenprofile" component={ScreenProfile} />
           <Route exact path="/screensearch" component={ScreenSearch} />

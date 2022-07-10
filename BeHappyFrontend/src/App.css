@@ -44,6 +44,18 @@ h4 {
   font-weight: bold;
 }
 
+.Tittle-Welcome {
+  font-family: "Abril Fatface", cursive;
+  font-size: 5rem;
+  font-weight: 600;
+  line-height: 1.8;
+}
+
+.Welcome-page {
+  background-color: #f2b09c;
+  height: 100vh;
+}
+
 .Login-page {
   display: flex;
   flex-direction: row;
