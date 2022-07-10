@@ -8,7 +8,7 @@ import { Container, Col, Row } from "reactstrap";
 import { Button } from "antd";
 import { Input } from "reactstrap";
 
-export default function ScreenSearch() {
+export default function ScreenSearchReco() {
   return (
     <Container fluid>
       <Row>
@@ -26,9 +26,9 @@ export default function ScreenSearch() {
         </Col>
         <Col xs="1" md="3" lg="4"></Col>
       </Row>
-      <Row style={{ backgroundColor: "#ffd2ee" }} className="Main-Row">
+      <Row style={{ backgroundColor: "#ffd2ee" }}>
         <Col xs="1" md="3" lg="4"></Col>
-        <Col xs="10" md="6" lg="4" className="Form">
+        <Col xs="10" md="6" lg="4" className="Main-Row">
           <p className="Text">SEARCH THROUGH OUR LIBRARIES</p>
           <Input
             className="Input"
@@ -92,7 +92,7 @@ export default function ScreenSearch() {
             className="Button-Shadow"
             style={{ boxShadow: "10px 10px #ffd2ee" }}
           >
-            EXPLORE
+            EXPLORE OTHER LISTS
           </Button>
           <Button
             className="Button-Shadow"

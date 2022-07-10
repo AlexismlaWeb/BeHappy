@@ -4,7 +4,9 @@ import "./App.css";
 import ScreenWelcome from "./ScreenWelcome";
 import ScreenRandom from "./ScreenRandom";
 import ScreenProfile from "./ScreenProfile";
-import ScreenSearch from "./ScreenSearch";
+import ScreenUser from "./ScreenUser";
+import ScreenSearchReco from "./ScreenSearchReco";
+import ScreenSearchUser from "./ScreenSearchUser";
 import ScreenSignInUp from "./ScreenSignInUp";
 
 import token from "./reducers/token";
@@ -21,7 +23,9 @@ function App() {
           <Route exact path="/screensigninup" component={ScreenSignInUp} />
           <Route exact path="/screenrandom" component={ScreenRandom} />
           <Route exact path="/screenprofile" component={ScreenProfile} />
-          <Route exact path="/screensearch" component={ScreenSearch} />
+          <Route exact path="/screenuser" component={ScreenUser} />
+          <Route exact path="/screensearchreco" component={ScreenSearchReco} />
+          <Route exact path="/screensearchuser" component={ScreenSearchUser} />
         </Switch>
       </Router>
     </Provider>

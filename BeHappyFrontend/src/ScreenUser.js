@@ -11,9 +11,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronCircleRight,
   faXmarkCircle,
+  faCirclePlus,
 } from "@fortawesome/free-solid-svg-icons";
 
-export default function ScreenProfile() {
+export default function ScreenUser() {
   return (
     <Container fluid>
       <Row>
@@ -22,9 +23,9 @@ export default function ScreenProfile() {
           <img src="../AvatarTest.png" className="Avatar" />
           <Button
             className="Button-Shadow"
-            style={{ boxShadow: "5px 5px #D7E8DA", height: "20px" }}
+            style={{ boxShadow: "5px 5px #F1E2FF", height: "20px" }}
           >
-            EDIT MY PROFILE
+            + FOLLOW
           </Button>
         </Col>
         <Col xs="1" md="3" lg="4"></Col>
@@ -43,7 +44,7 @@ export default function ScreenProfile() {
         </Col>
         <Col xs="1" md="3" lg="4"></Col>
       </Row>
-      <Row style={{ backgroundColor: "#D7E8DA" }} className="Main-Row">
+      <Row style={{ backgroundColor: "#F1E2FF" }} className="Main-Row">
         <Col xs="1" md="3" lg="4"></Col>
         <Col
           xs="10"
@@ -60,7 +61,7 @@ export default function ScreenProfile() {
                 <p className="Reco">Likes</p>
               </div>
             </div>
-            <FontAwesomeIcon icon={faXmarkCircle} className="Right-Icon" />
+            <FontAwesomeIcon icon={faCirclePlus} className="Right-Icon" />
           </div>
           <div className="List">
             <div className="List">
@@ -71,7 +72,7 @@ export default function ScreenProfile() {
                 <p className="Reco">Likes</p>
               </div>
             </div>
-            <FontAwesomeIcon icon={faXmarkCircle} className="Right-Icon" />
+            <FontAwesomeIcon icon={faCirclePlus} className="Right-Icon" />
           </div>
           <div className="List">
             <div className="List">
@@ -82,7 +83,7 @@ export default function ScreenProfile() {
                 <p className="Reco">Likes</p>
               </div>
             </div>
-            <FontAwesomeIcon icon={faXmarkCircle} className="Right-Icon" />
+            <FontAwesomeIcon icon={faCirclePlus} className="Right-Icon" />
           </div>
           <div className="List">
             <div className="List">
@@ -93,7 +94,7 @@ export default function ScreenProfile() {
                 <p className="Reco">Likes</p>
               </div>
             </div>
-            <FontAwesomeIcon icon={faXmarkCircle} className="Right-Icon" />
+            <FontAwesomeIcon icon={faCirclePlus} className="Right-Icon" />
           </div>
           <div className="List">
             <div className="List">
@@ -104,7 +105,7 @@ export default function ScreenProfile() {
                 <p className="Reco">Likes</p>
               </div>
             </div>
-            <FontAwesomeIcon icon={faXmarkCircle} className="Right-Icon" />
+            <FontAwesomeIcon icon={faCirclePlus} className="Right-Icon" />
           </div>
           <div className="List">
             <div className="List">
@@ -115,7 +116,7 @@ export default function ScreenProfile() {
                 <p className="Reco">Likes</p>
               </div>
             </div>
-            <FontAwesomeIcon icon={faXmarkCircle} className="Right-Icon" />
+            <FontAwesomeIcon icon={faCirclePlus} className="Right-Icon" />
           </div>
           <div className="List">
             <div className="List">
@@ -126,7 +127,7 @@ export default function ScreenProfile() {
                 <p className="Reco">Likes</p>
               </div>
             </div>
-            <FontAwesomeIcon icon={faXmarkCircle} className="Right-Icon" />
+            <FontAwesomeIcon icon={faCirclePlus} className="Right-Icon" />
           </div>
           <div className="List">
             <div className="List">
@@ -137,7 +138,7 @@ export default function ScreenProfile() {
                 <p className="Reco">Likes</p>
               </div>
             </div>
-            <FontAwesomeIcon icon={faXmarkCircle} className="Right-Icon" />
+            <FontAwesomeIcon icon={faCirclePlus} className="Right-Icon" />
           </div>
           <div className="List">
             <div className="List">
@@ -148,7 +149,7 @@ export default function ScreenProfile() {
                 <p className="Reco">Likes</p>
               </div>
             </div>
-            <FontAwesomeIcon icon={faXmarkCircle} className="Right-Icon" />
+            <FontAwesomeIcon icon={faCirclePlus} className="Right-Icon" />
           </div>
           <div className="List">
             <div className="List">
@@ -159,18 +160,7 @@ export default function ScreenProfile() {
                 <p className="Reco">Likes</p>
               </div>
             </div>
-            <FontAwesomeIcon icon={faXmarkCircle} className="Right-Icon" />
-          </div>
-          <div className="List">
-            <div className="List">
-              <img src="../AvatarTest.png" className="Reco-Image" />
-              <div className="Reco-Infos">
-                <p className="Reco">CATEGORY</p>
-                <p className="Reco">Title</p>
-                <p className="Reco">Likes</p>
-              </div>
-            </div>
-            <FontAwesomeIcon icon={faXmarkCircle} className="Right-Icon" />
+            <FontAwesomeIcon icon={faCirclePlus} className="Right-Icon" />
           </div>
         </Col>
         <Col xs="1" md="3" lg="4"></Col>
@@ -180,13 +170,13 @@ export default function ScreenProfile() {
         <Col xs="10" md="6" lg="4" className="Bottom">
           <Button
             className="Button-Shadow"
-            style={{ boxShadow: "10px 10px #D7E8DA" }}
+            style={{ boxShadow: "10px 10px #F1E2FF" }}
           >
             UPDATE MY LIST
           </Button>
           <Button
             className="Button-Shadow"
-            style={{ boxShadow: "10px 10px #D7E8DA" }}
+            style={{ boxShadow: "10px 10px #F1E2FF" }}
           >
             SURPRISE ME
           </Button>
