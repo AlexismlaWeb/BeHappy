@@ -6,8 +6,8 @@ var request = require("sync-request");
 const { listenerCount } = require("../models/users");
 const { Client } = require("podcast-api");
 
-// SEARCH A MOVIE //
-router.post("/searchMovie", function (req, res, next) {
+// SEARCH A FILM //
+router.post("/searchFilm", function (req, res, next) {
   let encodedQuery = encodeURI(req.body.queryFromFront);
 
   var data = request(
@@ -21,11 +21,11 @@ router.post("/searchMovie", function (req, res, next) {
     moviesList.push(element.original_title);
   }
   console.log("moviesList, ", moviesList);
-  res.json(dataParse);
+  res.json(moviesList);
 });
 
 // SEARCH A SERIES //
-router.post("/searchSeries", function (req, res, next) {
+router.post("/searchSerie", function (req, res, next) {
   let encodedQuery = encodeURI(req.body.queryFromFront);
 
   var data = request(
@@ -39,7 +39,7 @@ router.post("/searchSeries", function (req, res, next) {
     seriesList.push(element.original_name);
   }
   console.log("seriesList, ", seriesList);
-  res.json(dataParse);
+  res.json(seriesList);
 });
 
 // SEARCH A BOOK //
@@ -59,7 +59,7 @@ router.post("/searchBook", function (req, res, next) {
     booksList.push(element.volumeInfo.title);
   }
   console.log("booksList, ", booksList);
-  res.json(dataParse);
+  res.json(booksList);
 });
 
 // SEARCH A PODCAST //

@@ -9,6 +9,48 @@ import { Button } from "antd";
 import { Input } from "reactstrap";
 
 export default function ScreenSearchReco() {
+  const [searchCategory, setSearchCategory] = useState("Category");
+  const [searchTitle, setSearchTitle] = useState("");
+  const [resultsList, setResultsList] = useState([]);
+  const [error, setError] = useState("");
+
+  const [category, setCategory] = useState("Category");
+  const [title, setTitle] = useState("");
+  const [link, setLink] = useState("");
+
+  // RÉCUPÉRER LE TOKEN DE L'UTILISATEUR CONNECTÉ DANS LE STORE
+  let token = "KmWnmF-_xvjfykiesrJncP-xtc19esy0";
+
+  async function searchReco(searchCategory, searchTitle) {
+    console.log("dans searchReco() =>", searchCategory, searchTitle);
+    setError("");
+
+    let data = await fetch(`/search${searchCategory}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: "queryFromFront=" + searchTitle,
+    });
+
+    let response = await data.json();
+    console.log("response =>", response);
+    if (response.length === 0) {
+      setError("OUPS... THERE IS NO RESULT");
+    } else {
+      setResultsList(response);
+    }
+
+    setSearchCategory("Category");
+    setSearchTitle("");
+  }
+
+  function addRecoFromScratch(category, title, link) {
+    console.log("dans addReco() =>", category, title, link);
+
+    setCategory("Category");
+    setTitle("");
+    setLink("");
+  }
+
   return (
     <Container fluid>
       <Row>
@@ -33,55 +75,74 @@ export default function ScreenSearchReco() {
           <Input
             className="Input"
             type="select"
-            name="select"
-            id="exampleSelect"
+            name="searchCategory"
+            id="searchCategory"
+            value={searchCategory}
+            defaultValue={"default"}
+            onChange={(e) => setSearchCategory(e.target.value)}
           >
-            <option>Category</option>
-            <option>Film</option>
-            <option>Serie</option>
-            <option>Podcast</option>
-            <option>Music</option>
-            <option>Book</option>
-            <option>Other</option>
+            <option value={"default"}>Category</option>
+            <option value="Film">Film</option>
+            <option value="Serie">Serie</option>
+            <option value="Book">Book</option>
+            <option value="music">Music</option>
+            <option value="podcast">Podcast</option>
           </Input>
           <Input
             className="Input"
-            type="title"
-            name="title"
             placeholder="Title"
+            onChange={(e) => setSearchTitle(e.target.value)}
+            value={searchTitle}
           />
-          <Button className="Button-Submit">SEARCH</Button>
+          <Button
+            className="Button-Submit"
+            onClick={() => {
+              console.log("searchClick =>", searchCategory, searchTitle);
+              searchReco(searchCategory, searchTitle);
+            }}
+          >
+            SEARCH
+          </Button>
+          <p className="Text">{error}</p>
           <p className="Text">ADD YOUR RECO FROM SCRATCH</p>
-
           <Input
             className="Input"
             type="select"
-            name="select"
-            id="exampleSelect"
+            name="category"
+            id="category"
+            value={category}
+            defaultValue={"default"}
+            onChange={(e) => setCategory(e.target.value)}
           >
-            <option>Category</option>
-            <option>Film</option>
-            <option>Serie</option>
-            <option>Podcast</option>
-            <option>Music</option>
-            <option>Book</option>
-            <option>Other</option>
+            <option value={"default"}>Category</option>
+            <option value="film">Film</option>
+            <option value="serie">Serie</option>
+            <option value="podcast">Podcast</option>
+            <option value="music">Music</option>
+            <option value="book">Book</option>
+            <option value="other">Other</option>
           </Input>
           <Input
             className="Input"
-            type="title"
-            name="title"
             placeholder="Title"
+            onChange={(e) => setTitle(e.target.value)}
+            value={title}
           />
           <Input
             className="Input"
-            type="title"
-            name="title"
-            placeholder="Title"
+            placeholder="Link"
+            onChange={(e) => setLink(e.target.value)}
+            value={link}
           />
-          <Input className="Input" type="link" name="link" placeholder="Link" />
-          <Input className="Input" name="img" placeholder="Image" />
-          <Button className="Button-Submit">ADD TO MY HAPPY LIST</Button>
+          <Button
+            className="Button-Submit"
+            onClick={() => {
+              console.log("click =>", category, title, link);
+              addRecoFromScratch(category, title, link);
+            }}
+          >
+            ADD TO MY HAPPY LIST
+          </Button>
         </Col>
         <Col xs="1" md="3" lg="4"></Col>
       </Row>
