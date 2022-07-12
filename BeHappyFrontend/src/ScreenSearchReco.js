@@ -11,45 +11,58 @@ import { Input } from "reactstrap";
 export default function ScreenSearchReco() {
   const [searchCategory, setSearchCategory] = useState("Category");
   const [searchTitle, setSearchTitle] = useState("");
+
+  const [addCategory, setAddCategory] = useState("Category");
+  const [addTitle, setAddTitle] = useState("");
+  const [addLink, setAddLink] = useState("");
+
   const [resultsList, setResultsList] = useState([]);
   const [error, setError] = useState("");
-
-  const [category, setCategory] = useState("Category");
-  const [title, setTitle] = useState("");
-  const [link, setLink] = useState("");
 
   // RÉCUPÉRER LE TOKEN DE L'UTILISATEUR CONNECTÉ DANS LE STORE
   let token = "KmWnmF-_xvjfykiesrJncP-xtc19esy0";
 
-  async function searchReco(searchCategory, searchTitle) {
-    console.log("dans searchReco() =>", searchCategory, searchTitle);
+  // SEARCH API & BDD
+  async function searchReco(category, title, link) {
+    console.log("IN searchReco() =>", category, title, link);
+
     setError("");
-
-    let data = await fetch(`/search${searchCategory}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: "queryFromFront=" + searchTitle,
-    });
-
-    let response = await data.json();
-    console.log("response =>", response);
-    if (response.length === 0) {
-      setError("OUPS... THERE IS NO RESULT");
+    if (category === "Other") {
+      addReco(category, title, link);
     } else {
-      setResultsList(response);
+      let data = await fetch(`/search${category}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: "queryFromFront=" + title,
+      });
+
+      let response = await data.json();
+      console.log("response =>", response);
+      if (response.length === 0) {
+        setError("OUPS... THERE IS NO RESULT");
+      } else {
+        setResultsList(response);
+        // AFFICHER LES PROPOSITIONS
+      }
     }
 
     setSearchCategory("Category");
     setSearchTitle("");
+    setAddCategory("");
+    setAddTitle("");
+    setAddLink("");
   }
 
-  function addRecoFromScratch(category, title, link) {
-    console.log("dans addReco() =>", category, title, link);
+  // FONCTION à activer si :
+  // category = other dans searchReco()
+  // OU si click sur un bouton ADD
 
-    setCategory("Category");
-    setTitle("");
-    setLink("");
+  function addReco(category, title, link) {
+    console.log("in addReco() =>", category, title, link);
   }
+
+  // FONCTION à activer si click sur un bouton LIKE
+  function likeReco() {}
 
   return (
     <Container fluid>
@@ -85,8 +98,8 @@ export default function ScreenSearchReco() {
             <option value="Film">Film</option>
             <option value="Serie">Serie</option>
             <option value="Book">Book</option>
-            <option value="music">Music</option>
-            <option value="podcast">Podcast</option>
+            <option value="Music">Music</option>
+            <option value="Podcast">Podcast</option>
           </Input>
           <Input
             className="Input"
@@ -97,7 +110,7 @@ export default function ScreenSearchReco() {
           <Button
             className="Button-Submit"
             onClick={() => {
-              console.log("searchClick =>", searchCategory, searchTitle);
+              console.log("SEARCH Click =>", searchCategory, searchTitle);
               searchReco(searchCategory, searchTitle);
             }}
           >
@@ -108,37 +121,37 @@ export default function ScreenSearchReco() {
           <Input
             className="Input"
             type="select"
-            name="category"
-            id="category"
-            value={category}
+            name="searchCategory"
+            id="searchCategory"
+            value={addCategory}
             defaultValue={"default"}
-            onChange={(e) => setCategory(e.target.value)}
+            onChange={(e) => setAddCategory(e.target.value)}
           >
             <option value={"default"}>Category</option>
-            <option value="film">Film</option>
-            <option value="serie">Serie</option>
-            <option value="podcast">Podcast</option>
-            <option value="music">Music</option>
-            <option value="book">Book</option>
-            <option value="other">Other</option>
+            <option value="Film">Film</option>
+            <option value="Serie">Serie</option>
+            <option value="Book">Book</option>
+            <option value="Music">Music</option>
+            <option value="Podcast">Podcast</option>
+            <option value="Other">Other</option>
           </Input>
           <Input
             className="Input"
             placeholder="Title"
-            onChange={(e) => setTitle(e.target.value)}
-            value={title}
+            onChange={(e) => setAddTitle(e.target.value)}
+            value={addTitle}
           />
           <Input
             className="Input"
             placeholder="Link"
-            onChange={(e) => setLink(e.target.value)}
-            value={link}
+            onChange={(e) => setAddLink(e.target.value)}
+            value={addLink}
           />
           <Button
             className="Button-Submit"
             onClick={() => {
-              console.log("click =>", category, title, link);
-              addRecoFromScratch(category, title, link);
+              console.log("ADD click =>", addCategory, addTitle, addLink);
+              searchReco(addCategory, addTitle, addLink);
             }}
           >
             ADD TO MY HAPPY LIST

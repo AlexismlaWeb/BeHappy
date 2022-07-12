@@ -6,22 +6,66 @@ var request = require("sync-request");
 const { listenerCount } = require("../models/users");
 const { Client } = require("podcast-api");
 
-// SEARCH A FILM //
-router.post("/searchFilm", function (req, res, next) {
+var recoModel = require("../models/recommendations");
+var userModel = require("../models/users");
+
+// SEARCH FILM SECOND VERSION
+router.post("/searchFilm", async function (req, res, next) {
   let encodedQuery = encodeURI(req.body.queryFromFront);
 
+  // SEARCH IN THE API
   var data = request(
     "GET",
     `https://api.themoviedb.org/3/search/movie?api_key=b3b092670c7516d9cd1ef6866ace306d&language=en-US&query=${encodedQuery}&page=1&include_adult=false`
   );
   var dataParse = JSON.parse(data.body);
 
+  // SEARCH IN DDB WITH APIID + CREATION OF THE RESULTSLIST
   let moviesList = [];
   for (let element of dataParse.results) {
-    moviesList.push(element.original_title);
+    let foundInDBB = false;
+    const data = await recoModel.findOne({
+      APIid: element.id,
+    });
+    if (data) {
+      foundInDBB = true;
+    }
+
+    moviesList.push({
+      title: element.original_title,
+      alreadyExist: foundInDBB,
+      APIid: element.id,
+      link: element.poster_path,
+    });
   }
-  console.log("moviesList, ", moviesList);
+
   res.json(moviesList);
+});
+
+// ADD RECO
+router.post("/addReco", async function (req, res, next) {
+  let result = false;
+
+  let newReco = new recoModel({
+    category: req.body.categoryFromFront,
+    title: req.body.titleFromFront,
+    link: req.body.linkFromFront,
+    APIid: req.body.APIidFromFront,
+    usersList: [req.body.tokenFromFront],
+  });
+  let saveReco = await newReco.save();
+
+  let user = await userModel.findOne({
+    token: req.body.tokenFromFront,
+  });
+  user.recoList.push(saveReco.id);
+  let saveUser = await user.save();
+
+  if (saveUser && saveReco) {
+    result = true;
+  }
+
+  res.json({ result, saveReco, saveUser });
 });
 
 // SEARCH A SERIES //
@@ -104,6 +148,26 @@ router.post("/searchPodcast", function (req, res, next) {
 
 //   console.log("data => ", data);
 //   res.json(data);
+// });
+
+// SEARCH A FILM FIRST VERSION//
+// router.post("/searchFilm", function (req, res, next) {
+//   let encodedQuery = encodeURI(req.body.queryFromFront);
+
+//   var data = request(
+//     "GET",
+//     `https://api.themoviedb.org/3/search/movie?api_key=b3b092670c7516d9cd1ef6866ace306d&language=en-US&query=${encodedQuery}&page=1&include_adult=false`
+//   );
+//   var dataParse = JSON.parse(data.body);
+
+//   let moviesList = [];
+//   for (let element of dataParse.results) {
+//     console.log("name", element.original_title);
+//     console.log("id", element.id);
+//     moviesList.push(element.original_title);
+//   }
+//   console.log("moviesList, ", moviesList);
+//   res.json(moviesList);
 // });
 
 module.exports = router;

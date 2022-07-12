@@ -1,13 +1,14 @@
 const mongoose = require("mongoose");
 
-const recommendationSchema = mongoose.Schema({
-  name: String,
-  type: String,
+const recoSchema = mongoose.Schema({
+  category: String,
+  title: String,
+  APIid: Number,
   link: String,
-  urlToImage: String,
-  usersLikes: [String],
+  imageUrl: String,
+  usersList: [String],
 });
 
-const userModel = mongoose.model("recommendations", recommendationSchema);
+const recoModel = mongoose.model("recos", recoSchema);
 
-module.exports = recommendationModel;
+module.exports = recoModel;
