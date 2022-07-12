@@ -1,84 +1,94 @@
-import React, { useState, useEffect } from "react";
 import "./App.css";
+import React, { useState, useEffect } from "react";
+import Modal from "react-bootstrap/Modal";
 
-import { Container, Col, Row } from "reactstrap";
+import { Container, Col, Row, Input } from "reactstrap";
 import { Button } from "antd";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Link } from "react-router-dom/cjs/react-router-dom.min";
 import { AiOutlineHeart } from "react-icons/ai";
+import ScreenSignInUp from "./ScreenSignInUp";
 
 export default function ScreenRandom() {
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
   return (
     <Container fluid>
       <Row>
-        <Col xs="12" md="6" lg="4" className="Myaccount-Box">
-          <img src="../AvatarTest.png" className="Avatar" />
-          <Link className="Myaccount-Link">MY ACCOUNT</Link>
-        </Col>
-      </Row>
-      <Row className="Text" style={{ marginTop: "5%" }}>
-        <Col xs={4} md="6" lg="4">
-          <input type="radio" value="Music" name="type" /> MUSIC
-        </Col>
-        <Col xs={4} md="6" lg="4">
-          <input type="radio" value="Movies" name="type" /> MOVIES
-        </Col>
-        <Col xs={4} md="6" lg="4">
-          <input type="radio" value="Series" name="type" /> SERIES
-        </Col>
-      </Row>
-      <Row className="Text">
-        <Col xs={4} md="6" lg="4">
-          <input type="radio" value="Books" name="type" /> BOOKS
-        </Col>
-        <Col xs={4} md="6" lg="4">
-          <input type="radio" value="Podcasts" name="type" /> PODCASTS
-        </Col>
-        <Col xs={4} md="6" lg="4">
-          <input type="radio" value="Other" name="type" /> OTHER
-        </Col>
+        <Row>
+          <Col xs="12" md="6" lg="4" className="Myaccount-Box">
+            <img src="../AvatarTest.png" className="Avatar" alt="avatar" />
+            <Link className="Myaccount-Link">MY ACCOUNT</Link>
+          </Col>
+        </Row>
+        <Row className="Text" style={{ marginTop: "5%" }}>
+          <Col xs={4} md="6" lg="4">
+            <input type="radio" value="Music" name="type" /> MUSIC
+          </Col>
+          <Col xs={4} md="6" lg="4">
+            <input type="radio" value="Movies" name="type" /> MOVIES
+          </Col>
+          <Col xs={4} md="6" lg="4">
+            <input type="radio" value="Series" name="type" /> SERIES
+          </Col>
+        </Row>
+        <Row className="Text">
+          <Col xs={4} md="6" lg="4">
+            <input type="radio" value="Books" name="type" /> BOOKS
+          </Col>
+          <Col xs={4} md="6" lg="4">
+            <input type="radio" value="Podcasts" name="type" /> PODCASTS
+          </Col>
+          <Col xs={4} md="6" lg="4">
+            <input type="radio" value="Other" name="type" /> OTHER
+          </Col>
+        </Row>
+
+        <Row className="Text">
+          <Col xs={12} md="6" lg="4">
+            <input type="radio" value="FollowedOnly" name="type" /> FROM
+            FOLLOWED LIST ONLY
+          </Col>
+        </Row>
+        <Row>
+          <Col xs="12" md="6" lg="4" className="Bottom">
+            <Button
+              className="Button-Shadow"
+              style={{
+                boxShadow: "10px 10px #ffd2ee",
+                width: "50%",
+                height: "70%",
+              }}
+            >
+              UPDATE MY HAPPY LIST
+            </Button>
+            <Button
+              className="Button-Shadow"
+              style={{
+                boxShadow: "10px 10px #ffd2ee",
+                width: "50%",
+                height: "70%",
+              }}
+            >
+              EXPLORE OTHER HAPPY LIST
+            </Button>
+          </Col>
+        </Row>
       </Row>
 
-      <Row className="Text">
-        <Col xs={12} md="6" lg="4">
-          <input type="radio" value="FollowedOnly" name="type" /> FROM FOLLOWED
-          LIST ONLY
-        </Col>
-      </Row>
-      <Row>
-        <Col xs="12" md="6" lg="4" className="Bottom">
-          <Button
-            className="Button-Shadow"
-            style={{
-              boxShadow: "10px 10px #ffd2ee",
-              width: "50%",
-              height: "70%",
-            }}
-          >
-            UPDATE MY HAPPY LIST
-          </Button>
-          <Button
-            className="Button-Shadow"
-            style={{
-              boxShadow: "10px 10px #ffd2ee",
-              width: "50%",
-              height: "70%",
-            }}
-          >
-            EXPLORE OTHER HAPPY LIST
-          </Button>
-        </Col>
-      </Row>
       <Row
         style={{
           backgroundColor: "#FFDBD0",
-          marginTop: "5%",
-          paddingTop: "10%",
-          paddingBottom: "20%",
+          marginTop: "2%",
+          paddingTop: "5%",
+          paddingBottom: "5%",
         }}
       >
-        <Col xs={12} md={6} lg={4} style={{ marginTop: "5%" }}>
+        <Col xs={12} md={6} lg={4} style={{ marginTop: "1%" }}>
           <h3 className="Title">GET LUCKY</h3>
         </Col>
         <Row>
@@ -88,11 +98,17 @@ export default function ScreenRandom() {
         </Row>
         <Row>
           <Col
-            xs={{ span: 11, offset: 1 }}
+            xs={{ span: 8, offset: 2 }}
             md={6}
             lg={4}
             style={{ marginBottom: "5%" }}
           >
+            <Modal show={show} onHide={handleClose} size="lg">
+              <Modal.Header closeButton></Modal.Header>
+              <Modal.Body>
+                <ScreenSignInUp />
+              </Modal.Body>
+            </Modal>
             <img src="..\daftpunk.png" alt="daft-punk" className="Img" />
           </Col>
         </Row>
@@ -128,6 +144,10 @@ export default function ScreenRandom() {
               width: "100%",
               height: "100%",
               fontSize: "20px",
+            }}
+            onClick={() => {
+              handleShow();
+              console.log("clicked");
             }}
           >
             SURPRISE ME!

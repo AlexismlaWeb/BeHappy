@@ -17,7 +17,7 @@ export default function ScreenWelcome(props) {
           md={4}
           className="d-flex align-items-center justify-content-center"
         >
-          <Link style={{ color: "black" }} to="/screensearch">
+          <Link style={{ color: "black" }} to="/screenrandom">
             <GoArrowRight style={{ fontSize: "100px" }} />
           </Link>
         </Col>

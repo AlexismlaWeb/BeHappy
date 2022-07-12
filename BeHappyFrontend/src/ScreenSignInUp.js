@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Input, Button } from "antd";
+import { Button } from "antd";
+import { Input } from "reactstrap";
+
 import "./App.css";
 import { useParams, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
@@ -66,65 +68,156 @@ function ScreenSignInUp(props) {
   });
 
   return (
-    <div className="Login-page">
-      {/* SIGN-IN */}
-
-      <div className="Sign">
-        <Input
-          onChange={(e) => setSignInEmail(e.target.value)}
-          className="Login-input"
-          placeholder="email"
-        />
-
-        <Input.Password
-          onChange={(e) => setSignInPassword(e.target.value)}
-          className="Login-input"
-          placeholder="password"
-        />
-
-        {tabErrorsSignin}
-
-        <Button
-          onClick={() => handleSubmitSignin()}
-          style={{ width: "80px" }}
-          type="primary"
-        >
-          Sign-in
-        </Button>
-      </div>
-
-      {/* SIGN-UP */}
-
-      <div className="Sign">
-        <Input
-          onChange={(e) => setSignUpUsername(e.target.value)}
-          className="Login-input"
-          placeholder="username"
-        />
-
-        <Input
-          onChange={(e) => setSignUpEmail(e.target.value)}
-          className="Login-input"
-          placeholder="email"
-        />
-
-        <Input.Password
-          onChange={(e) => setSignUpPassword(e.target.value)}
-          className="Login-input"
-          placeholder="password"
-        />
-
-        {tabErrorsSignup}
-
-        <Button
-          onClick={() => handleSubmitSignup()}
-          style={{ width: "80px" }}
-          type="primary"
-        >
-          Sign-up
-        </Button>
-      </div>
-    </div>
+    <Container fluid style={{ backgroundColor: "#feffe7" }}>
+      <Row>
+        <Col xs={12}>
+          <h2 className="Title-sign">
+            GET CONNECTED & START SHARING YOUR RECO
+          </h2>
+        </Col>
+      </Row>
+      <Row>
+        <Row>
+          <Col xs={12}>
+            <p className="Text" style={{ marginBottom: "1%" }}>
+              I HAVE AN ACCOUNT
+            </p>
+          </Col>
+        </Row>
+        <Row className="">
+          <Row>
+            <Col
+              xs={12}
+              className="d-flex justify-content-center align-items-center"
+            >
+              <Input
+                onChange={(e) => setSignInEmail(e.target.value)}
+                className="Input"
+                placeholder="email"
+                type="email"
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col
+              xs={12}
+              className="d-flex justify-content-center align-items-center"
+            >
+              <Input
+                onChange={(e) => setSignInPassword(e.target.value)}
+                className="Input"
+                type="password"
+                placeholder="password"
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col
+              xs={12}
+              className="d-flex justify-content-center align-items-center"
+            >
+              {tabErrorsSignin}
+            </Col>
+          </Row>
+          <Row>
+            <Col
+              xs={12}
+              className="d-flex justify-content-center align-items-center"
+            >
+              <Button
+                onClick={() => handleSubmitSignin()}
+                className="Button-Shadow"
+                style={{
+                  boxShadow: "10px 10px #ffd2ee",
+                  width: "50%",
+                  height: "70%",
+                  fontSize: "20px",
+                }}
+              >
+                SIGN IN
+              </Button>
+            </Col>
+          </Row>
+          <Row className="">
+            <Row>
+              <Col
+                xs={12}
+                className="d-flex justify-content-center align-items-center"
+              >
+                <p className="Text" style={{ marginBottom: "4%" }}>
+                  CREATE MY ACCOUNT
+                </p>
+              </Col>
+            </Row>
+            <Row>
+              <Col
+                xs={12}
+                className="d-flex justify-content-center align-items-center"
+              >
+                <Input
+                  onChange={(e) => setSignUpUsername(e.target.value)}
+                  className="Input "
+                  placeholder="username"
+                />
+              </Col>
+            </Row>
+            <Row>
+              <Col
+                xs={12}
+                className="d-flex justify-content-center align-items-center"
+              >
+                <Input
+                  onChange={(e) => setSignUpEmail(e.target.value)}
+                  className="Input"
+                  placeholder="email"
+                  type="email"
+                />
+              </Col>
+            </Row>
+            <Row>
+              <Col
+                xs={12}
+                className="d-flex justify-content-center align-items-center"
+              >
+                <Input
+                  type="password"
+                  onChange={(e) => setSignUpPassword(e.target.value)}
+                  className="Input"
+                  placeholder="password"
+                />
+              </Col>
+            </Row>
+            <Row>
+              <Col
+                xs={12}
+                className="d-flex justify-content-center align-items-center"
+              >
+                {tabErrorsSignup}
+              </Col>
+            </Row>
+            <Row>
+              <Col
+                xs={12}
+                className="d-flex justify-content-center align-items-center"
+              >
+                <Button
+                  onClick={() => handleSubmitSignup()}
+                  className="Button-Shadow"
+                  style={{
+                    boxShadow: "10px 10px #ffd2ee",
+                    width: "50%",
+                    height: "70%",
+                    fontSize: "20px",
+                  }}
+                >
+                  SIGN-UP
+                </Button>
+              </Col>
+            </Row>
+          </Row>
+        </Row>
+      </Row>
+    </Container>
   );
 }
 
