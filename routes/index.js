@@ -16,7 +16,7 @@ router.post("/addReco", async function (req, res, next) {
   let newReco = new recoModel({
     category: req.body.categoryFromFront,
     title: req.body.titleFromFront,
-    link: req.body.linkFromFront,
+    imageUrl: req.body.linkFromFront,
     APIid: req.body.APIidFromFront,
     usersList: [req.body.tokenFromFront],
   });
@@ -53,18 +53,19 @@ router.post("/searchFilm", async function (req, res, next) {
       APIid: element.id,
     });
     if (data) {
-      let APIid = element.id;
-      APIid.toString();
       moviesList.push({
-        title: element.original_title,
+        title: data.title,
         alreadyInDB: true,
-        APIid: APIid,
-        imageUrl: `https://image.tmdb.org/t/p/w185${element.poster_path}`,
+        APIid: data.APIid,
+        imageUrl: data.imageUrl,
+        id: data.id,
       });
     } else {
+      let APIid = element.id;
       moviesList.push({
         title: element.original_title,
         alreadyInDB: false,
+        APIid: APIid.toString(),
         imageUrl: `https://image.tmdb.org/t/p/w185${element.poster_path}`,
       });
     }
@@ -83,7 +84,6 @@ router.post("/searchSerie", async function (req, res, next) {
     `https://api.themoviedb.org/3/search/tv?api_key=b3b092670c7516d9cd1ef6866ace306d&language=en-US&page=1&query=${encodedQuery}&include_adult=false`
   );
   var dataParse = JSON.parse(data.body);
-  console.log("dataParse.results", dataParse.results);
 
   // SEARCH IN DB WITH APIID + CREATION OF THE RESULTSLIST
   let seriesList = [];
@@ -93,14 +93,18 @@ router.post("/searchSerie", async function (req, res, next) {
     });
     if (data) {
       seriesList.push({
-        title: element.original_name,
+        title: data.title,
         alreadyInDB: true,
-        imageUrl: `https://image.tmdb.org/t/p/w185${element.poster_path}`,
+        APIid: data.APIid,
+        imageUrl: data.imageUrl,
+        id: data.id,
       });
     } else {
+      let APIid = element.id;
       seriesList.push({
         title: element.original_name,
         alreadyInDB: false,
+        APIid: APIid.toString(),
         imageUrl: `https://image.tmdb.org/t/p/w185${element.poster_path}`,
       });
     }
@@ -123,19 +127,29 @@ router.post("/searchBook", async function (req, res, next) {
 
   // SEARCH IN DB WITH APIID + CREATION OF THE RESULTSLIST
   let booksList = [];
+
   for (let element of dataParse.items) {
-    let foundInDB = false;
+    let index = Math.floor(Math.random() * 3);
+
     const data = await recoModel.findOne({
       APIid: element.id,
     });
     if (data) {
-      foundInDB = true;
+      booksList.push({
+        title: data.title,
+        alreadyInDB: true,
+        APIid: data.APIid,
+        imageUrl: data.imageUrl,
+        id: data.id,
+      });
+    } else {
+      booksList.push({
+        title: element.volumeInfo.title,
+        alreadyInDB: false,
+        APIid: element.id,
+        imageUrl: `../bookimage${index}.png`,
+      });
     }
-    booksList.push({
-      title: element.volumeInfo.title,
-      alreadyInDB: foundInDB,
-      imageUrl: "../bookimage1.png",
-    });
   }
 
   res.json(booksList);
@@ -148,6 +162,7 @@ router.post("/searchPodcast", async function (req, res, next) {
   // SEARCH IN THE API
   const client = Client({ apiKey: "5ab7d2dd84224806a056cfe9a777dd7c" });
   let podcastsList = [];
+
   await client
     .search({
       q: encodedQuery,
@@ -177,6 +192,7 @@ router.post("/searchPodcast", async function (req, res, next) {
     });
     if (data) {
       element.alreadyInDB = true;
+      element.id = data.id;
     }
   }
 
