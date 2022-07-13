@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const recoSchema = mongoose.Schema({
   category: String,
   title: String,
-  APIid: Number,
+  APIid: String,
   link: String,
   imageUrl: String,
   usersList: [String],
