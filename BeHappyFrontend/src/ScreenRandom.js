@@ -18,6 +18,7 @@ function ScreenRandom(props) {
   const [show, setShow] = useState(false);
   const [signText, setSignText] = useState("SIGN IN");
   const [liked, setLiked] = useState(false);
+
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 

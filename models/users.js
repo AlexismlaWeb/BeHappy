@@ -5,7 +5,7 @@ const userSchema = mongoose.Schema({
   email: String,
   password: String,
   token: String,
-  recoList: [String],
+  recoList: [{ type: mongoose.Schema.Types.ObjectId, ref: "recos" }],
   followed: [String],
   followers: [String],
 });

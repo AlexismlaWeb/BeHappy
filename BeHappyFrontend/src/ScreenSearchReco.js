@@ -68,122 +68,124 @@ function ScreenSearchReco(props) {
 
   // FONCTION à activer si click sur un bouton LIKE
   function likeReco() {}
-
-  return (
-    <Container fluid>
-      <Row>
-        <Col xs="1" md="3" lg="4"></Col>
-        <Col xs="10" md="6" lg="4" className="Myaccount-Box">
-          <img src="../AvatarTest.png" className="Avatar" />
-          <Link className="Myaccount-Link">MY ACCOUNT</Link>
-        </Col>
-        <Col xs="1" md="3" lg="4"></Col>
-      </Row>
-      <Row>
-        <Col xs="1" md="3" lg="4"></Col>
-        <Col xs="10" md="6" lg="4">
-          <p className="Title">WHAT MAKES YOU HAPPY?</p>
-        </Col>
-        <Col xs="1" md="3" lg="4"></Col>
-      </Row>
-      <Row style={{ backgroundColor: "#ffd2ee" }}>
-        <Col xs="1" md="3" lg="4"></Col>
-        <Col xs="10" md="6" lg="4" className="Main-Row">
-          <p className="Text">SEARCH THROUGH OUR LIBRARIES</p>
-          <Input
-            className="Input"
-            type="select"
-            name="searchCategory"
-            id="searchCategory"
-            value={searchCategory}
-            defaultValue={"default"}
-            onChange={(e) => setSearchCategory(e.target.value)}
-          >
-            <option value={"default"}>Category</option>
-            <option value="Film">Film</option>
-            <option value="Serie">Serie</option>
-            <option value="Book">Book</option>
-            <option value="Music">Music</option>
-            <option value="Podcast">Podcast</option>
-          </Input>
-          <Input
-            className="Input"
-            placeholder="Title"
-            onChange={(e) => setSearchTitle(e.target.value)}
-            value={searchTitle}
-          />
-          <Button
-            className="Button-Submit"
-            onClick={() => {
-              console.log("SEARCH Click =>", searchCategory, searchTitle);
-              searchReco(searchCategory, searchTitle);
-            }}
-          >
-            SEARCH
-          </Button>
-          <p className="Text">{error}</p>
-          <p className="Text">ADD YOUR RECO FROM SCRATCH</p>
-          <Input
-            className="Input"
-            type="select"
-            name="searchCategory"
-            id="searchCategory"
-            value={addCategory}
-            defaultValue={"default"}
-            onChange={(e) => setAddCategory(e.target.value)}
-          >
-            <option value={"default"}>Category</option>
-            <option value="Film">Film</option>
-            <option value="Serie">Serie</option>
-            <option value="Book">Book</option>
-            <option value="Music">Music</option>
-            <option value="Podcast">Podcast</option>
-            <option value="Other">Other</option>
-          </Input>
-          <Input
-            className="Input"
-            placeholder="Title"
-            onChange={(e) => setAddTitle(e.target.value)}
-            value={addTitle}
-          />
-          <Input
-            className="Input"
-            placeholder="Link"
-            onChange={(e) => setAddLink(e.target.value)}
-            value={addLink}
-          />
-          <Button
-            className="Button-Submit"
-            onClick={() => {
-              console.log("ADD click =>", addCategory, addTitle, addLink);
-              searchReco(addCategory, addTitle, addLink);
-            }}
-          >
-            ADD TO MY HAPPY LIST
-          </Button>
-        </Col>
-        <Col xs="1" md="3" lg="4"></Col>
-      </Row>
-      <Row>
-        <Col xs="1" md="3" lg="4"></Col>
-        <Col xs="10" md="6" lg="4" className="Bottom">
-          <Button
-            className="Button-Shadow"
-            style={{ boxShadow: "10px 10px #ffd2ee" }}
-          >
-            EXPLORE OTHER LISTS
-          </Button>
-          <Button
-            className="Button-Shadow"
-            style={{ boxShadow: "10px 10px #ffd2ee" }}
-          >
-            SURPRISE ME
-          </Button>
-        </Col>
-        <Col xs="1" md="3" lg="4" className="col3"></Col>
-      </Row>
-    </Container>
-  );
+  if (props.token) {
+    return (
+      <Container fluid>
+        <HeaderComposant />
+        <Row>
+          <Col xs="1" md="3" lg="4"></Col>
+          <Col xs="10" md="6" lg="4">
+            <p className="Title">WHAT MAKES YOU HAPPY?</p>
+          </Col>
+          <Col xs="1" md="3" lg="4"></Col>
+        </Row>
+        <Row style={{ backgroundColor: "#ffd2ee" }}>
+          <Col xs="1" md="3" lg="4"></Col>
+          <Col xs="10" md="6" lg="4" className="Main-Row">
+            <p className="Text">SEARCH THROUGH OUR LIBRARIES</p>
+            <Input
+              className="Input"
+              type="select"
+              name="searchCategory"
+              id="searchCategory"
+              value={searchCategory}
+              defaultValue={"default"}
+              onChange={(e) => setSearchCategory(e.target.value)}
+            >
+              <option value={"default"}>Category</option>
+              <option value="Film">Film</option>
+              <option value="Serie">Serie</option>
+              <option value="Book">Book</option>
+              <option value="Music">Music</option>
+              <option value="Podcast">Podcast</option>
+            </Input>
+            <Input
+              className="Input"
+              placeholder="Title"
+              onChange={(e) => setSearchTitle(e.target.value)}
+              value={searchTitle}
+            />
+            <Button
+              className="Button-Submit"
+              onClick={() => {
+                console.log("SEARCH Click =>", searchCategory, searchTitle);
+                searchReco(searchCategory, searchTitle);
+              }}
+            >
+              SEARCH
+            </Button>
+            <p className="Text">{error}</p>
+            <p className="Text">ADD YOUR RECO FROM SCRATCH</p>
+            <Input
+              className="Input"
+              type="select"
+              name="searchCategory"
+              id="searchCategory"
+              value={addCategory}
+              defaultValue={"default"}
+              onChange={(e) => setAddCategory(e.target.value)}
+            >
+              <option value={"default"}>Category</option>
+              <option value="Film">Film</option>
+              <option value="Serie">Serie</option>
+              <option value="Book">Book</option>
+              <option value="Music">Music</option>
+              <option value="Podcast">Podcast</option>
+              <option value="Other">Other</option>
+            </Input>
+            <Input
+              className="Input"
+              placeholder="Title"
+              onChange={(e) => setAddTitle(e.target.value)}
+              value={addTitle}
+            />
+            <Input
+              className="Input"
+              placeholder="Link"
+              onChange={(e) => setAddLink(e.target.value)}
+              value={addLink}
+            />
+            <Button
+              className="Button-Submit"
+              onClick={() => {
+                console.log("ADD click =>", addCategory, addTitle, addLink);
+                searchReco(addCategory, addTitle, addLink);
+              }}
+            >
+              ADD TO MY HAPPY LIST
+            </Button>
+          </Col>
+          <Col xs="1" md="3" lg="4"></Col>
+        </Row>
+        <Row>
+          <Col xs="1" md="3" lg="4"></Col>
+          <Col xs="10" md="6" lg="4" className="Bottom">
+            <Button
+              className="Button-Shadow"
+              style={{ boxShadow: "10px 10px #ffd2ee" }}
+              onClick={() => {
+                history.push("/screensearchuser");
+              }}
+            >
+              EXPLORE OTHER LISTS
+            </Button>
+            <Button
+              className="Button-Shadow"
+              style={{ boxShadow: "10px 10px #ffd2ee" }}
+              onClick={() => {
+                history.push("/screenrandom");
+              }}
+            >
+              SURPRISE ME
+            </Button>
+          </Col>
+          <Col xs="1" md="3" lg="4" className="col3"></Col>
+        </Row>
+      </Container>
+    );
+  } else {
+    return <Redirect to="/screenrandom" />;
+  }
 }
 
 function mapStateToProps(state) {

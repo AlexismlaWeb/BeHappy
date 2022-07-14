@@ -10,9 +10,10 @@ import ScreenSearchUser from "./ScreenSearchUser";
 import ScreenSignInUp from "./ScreenSignInUp";
 
 import token from "./reducers/token";
+import user from "./reducers/userInfos";
 import { Provider } from "react-redux";
 import { createStore, combineReducers } from "redux";
-const store = createStore(combineReducers({ token }));
+const store = createStore(combineReducers({ token, user }));
 
 function App() {
   return (

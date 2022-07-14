@@ -16,6 +16,44 @@ function ScreenProfile(props) {
     let path = `/screenrandom`;
     history.push(path);
   };
+
+  const [userInfo, setUserInfo] = useState();
+
+  useEffect(() => {
+    const RecupUserInfo = async () => {
+      if (props.token) {
+        const data = await fetch("/getUserInfoByToken/" + props.token);
+        const body = await data.json();
+        if (body) {
+          props.addUserInfo(body.user);
+          setUserInfo(body.user);
+        }
+      }
+    };
+    RecupUserInfo();
+  }, []);
+
+  console.log("userInfo: ", userInfo);
+  if (userInfo) {
+    var usersListReco = props.user.recoList.map((user) => {
+      return (
+        <div className="List">
+          <div className="List">
+            <img src={user.imageUrl} className="Reco-Image" />
+            <div className="Reco-Infos">
+              <p className="Reco">{user.category}</p>
+              <p className="Reco">{user.title}</p>
+              <p className="Reco">Likes</p>
+            </div>
+          </div>
+          <FontAwesomeIcon icon={faXmarkCircle} className="Right-Icon" />
+        </div>
+      );
+    });
+  } else {
+    usersListReco = "No Recommendation";
+  }
+
   if (props.token) {
     return (
       <Container fluid>
@@ -36,12 +74,18 @@ function ScreenProfile(props) {
           <Col xs="1" md="3" lg="4"></Col>
           <Col xs="10" md="6" lg="4">
             <p className="User-Pseudo" style={{ textAlign: "center" }}>
-              @JoeyPasta
+              @{userInfo ? userInfo.username : "Loading..."}
             </p>
             <div className="User-Stats">
-              <p className="Text2"> 12 RECO</p>
-              <p className="Text2"> 15 FOLLOWERS</p>
-              <p className="Text2"> 18 FOLLOWING</p>
+              <p className="Text2">
+                {userInfo ? userInfo.recoList.length : "Loading..."} RECO
+              </p>
+              <p className="Text2">
+                {userInfo ? userInfo.followers.length : "Loading..."} FOLLOWERS
+              </p>
+              <p className="Text2">
+                {userInfo ? userInfo.followed.length : "Loading..."} FOLLOWING
+              </p>
             </div>
           </Col>
           <Col xs="1" md="3" lg="4"></Col>
@@ -54,127 +98,7 @@ function ScreenProfile(props) {
             lg="4"
             style={{ height: "420px", overflowY: "auto" }}
           >
-            <div className="List">
-              <div className="List">
-                <img src="../AvatarTest.png" className="Reco-Image" />
-                <div className="Reco-Infos">
-                  <p className="Reco">CATEGORY</p>
-                  <p className="Reco">Title</p>
-                  <p className="Reco">Likes</p>
-                </div>
-              </div>
-              <FontAwesomeIcon icon={faXmarkCircle} className="Right-Icon" />
-            </div>
-            <div className="List">
-              <div className="List">
-                <img src="../AvatarTest.png" className="Reco-Image" />
-                <div className="Reco-Infos">
-                  <p className="Reco">CATEGORY</p>
-                  <p className="Reco">Title</p>
-                  <p className="Reco">Likes</p>
-                </div>
-              </div>
-              <FontAwesomeIcon icon={faXmarkCircle} className="Right-Icon" />
-            </div>
-            <div className="List">
-              <div className="List">
-                <img src="../AvatarTest.png" className="Reco-Image" />
-                <div className="Reco-Infos">
-                  <p className="Reco">CATEGORY</p>
-                  <p className="Reco">Title</p>
-                  <p className="Reco">Likes</p>
-                </div>
-              </div>
-              <FontAwesomeIcon icon={faXmarkCircle} className="Right-Icon" />
-            </div>
-            <div className="List">
-              <div className="List">
-                <img src="../AvatarTest.png" className="Reco-Image" />
-                <div className="Reco-Infos">
-                  <p className="Reco">CATEGORY</p>
-                  <p className="Reco">Title</p>
-                  <p className="Reco">Likes</p>
-                </div>
-              </div>
-              <FontAwesomeIcon icon={faXmarkCircle} className="Right-Icon" />
-            </div>
-            <div className="List">
-              <div className="List">
-                <img src="../AvatarTest.png" className="Reco-Image" />
-                <div className="Reco-Infos">
-                  <p className="Reco">CATEGORY</p>
-                  <p className="Reco">Title</p>
-                  <p className="Reco">Likes</p>
-                </div>
-              </div>
-              <FontAwesomeIcon icon={faXmarkCircle} className="Right-Icon" />
-            </div>
-            <div className="List">
-              <div className="List">
-                <img src="../AvatarTest.png" className="Reco-Image" />
-                <div className="Reco-Infos">
-                  <p className="Reco">CATEGORY</p>
-                  <p className="Reco">Title</p>
-                  <p className="Reco">Likes</p>
-                </div>
-              </div>
-              <FontAwesomeIcon icon={faXmarkCircle} className="Right-Icon" />
-            </div>
-            <div className="List">
-              <div className="List">
-                <img src="../AvatarTest.png" className="Reco-Image" />
-                <div className="Reco-Infos">
-                  <p className="Reco">CATEGORY</p>
-                  <p className="Reco">Title</p>
-                  <p className="Reco">Likes</p>
-                </div>
-              </div>
-              <FontAwesomeIcon icon={faXmarkCircle} className="Right-Icon" />
-            </div>
-            <div className="List">
-              <div className="List">
-                <img src="../AvatarTest.png" className="Reco-Image" />
-                <div className="Reco-Infos">
-                  <p className="Reco">CATEGORY</p>
-                  <p className="Reco">Title</p>
-                  <p className="Reco">Likes</p>
-                </div>
-              </div>
-              <FontAwesomeIcon icon={faXmarkCircle} className="Right-Icon" />
-            </div>
-            <div className="List">
-              <div className="List">
-                <img src="../AvatarTest.png" className="Reco-Image" />
-                <div className="Reco-Infos">
-                  <p className="Reco">CATEGORY</p>
-                  <p className="Reco">Title</p>
-                  <p className="Reco">Likes</p>
-                </div>
-              </div>
-              <FontAwesomeIcon icon={faXmarkCircle} className="Right-Icon" />
-            </div>
-            <div className="List">
-              <div className="List">
-                <img src="../AvatarTest.png" className="Reco-Image" />
-                <div className="Reco-Infos">
-                  <p className="Reco">CATEGORY</p>
-                  <p className="Reco">Title</p>
-                  <p className="Reco">Likes</p>
-                </div>
-              </div>
-              <FontAwesomeIcon icon={faXmarkCircle} className="Right-Icon" />
-            </div>
-            <div className="List">
-              <div className="List">
-                <img src="../AvatarTest.png" className="Reco-Image" />
-                <div className="Reco-Infos">
-                  <p className="Reco">CATEGORY</p>
-                  <p className="Reco">Title</p>
-                  <p className="Reco">Likes</p>
-                </div>
-              </div>
-              <FontAwesomeIcon icon={faXmarkCircle} className="Right-Icon" />
-            </div>
+            {usersListReco}
           </Col>
           <Col xs="1" md="3" lg="4"></Col>
         </Row>
@@ -239,11 +163,14 @@ function mapDispatchToProps(dispatch) {
     addToken: function () {
       dispatch({ type: "log-out" });
     },
+    addUserInfo: function (user) {
+      dispatch({ type: "addUserInfo", user: user });
+    },
   };
 }
 
 function mapStateToProps(state) {
-  return { token: state.token };
+  return { token: state.token, user: state.user };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ScreenProfile);

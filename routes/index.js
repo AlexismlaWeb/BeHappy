@@ -9,6 +9,19 @@ const { Client } = require("podcast-api");
 var recoModel = require("../models/recommendations");
 var userModel = require("../models/users");
 
+// Get User Info By Token
+
+router.get("/getUserInfoByToken/:tokenFromFront", async function (req, res) {
+  var token = req.params.tokenFromFront;
+  var userInfo = await userModel.findOne({ token: token }).populate({
+    path: "recoList",
+    populate: {
+      path: "_id",
+    },
+  });
+  res.json({ user: userInfo });
+});
+
 // ADD RECO
 router.post("/addReco", async function (req, res, next) {
   let result = false;
