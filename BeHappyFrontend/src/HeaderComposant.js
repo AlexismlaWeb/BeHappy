@@ -31,16 +31,9 @@ function HeaderComposant(props) {
     if (props.token) {
       history.push("/screenprofile");
     } else {
-      console.log("not logged in");
       setShow(true);
     }
   };
-
-  if (props.token) {
-    console.log("token: ", props.token);
-  } else {
-    console.log("no token");
-  }
 
   return (
     <Container fluid>

@@ -9,6 +9,13 @@ const { Client } = require("podcast-api");
 var recoModel = require("../models/recommendations");
 var userModel = require("../models/users");
 
+// Get all recommendations
+router.get("/getAllRecommendations", async function (req, res) {
+  var allRecommendations = await recoModel.find();
+  console.log(allRecommendations);
+  res.json(allRecommendations);
+});
+
 // Get User Info By Token
 
 router.get("/getUserInfoByToken/:tokenFromFront", async function (req, res) {

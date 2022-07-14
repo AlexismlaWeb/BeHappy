@@ -23,6 +23,14 @@ function ScreenRandom(props) {
   const handleShow = () => setShow(true);
 
   useEffect(() => {
+    const getAllRecommendations = async () => {
+      const data = await fetch("/getAllRecommendations");
+      const body = await data.json();
+    };
+    getAllRecommendations();
+  }, []);
+
+  useEffect(() => {
     const ConnectedorNot = () => {
       if (props.token) {
         setSignText("MY ACCOUNT");
@@ -35,16 +43,9 @@ function ScreenRandom(props) {
     if (props.token) {
       history.push("/screenprofile");
     } else {
-      console.log("not logged in");
       setShow(true);
     }
   };
-
-  if (props.token) {
-    console.log("token: ", props.token);
-  } else {
-    console.log("no token");
-  }
 
   var ok;
 
@@ -64,7 +65,6 @@ function ScreenRandom(props) {
           style={{ fontSize: "40px" }}
           onClick={() => {
             setLiked(true);
-            console.log("liked");
           }}
         />
       );
@@ -227,9 +227,7 @@ function ScreenRandom(props) {
               height: "100%",
               fontSize: "20px",
             }}
-            onClick={() => {
-              console.log("clicked");
-            }}
+            onClick={() => {}}
           >
             SURPRISE ME!
           </Button>

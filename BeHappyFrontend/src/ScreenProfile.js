@@ -33,13 +33,12 @@ function ScreenProfile(props) {
     RecupUserInfo();
   }, []);
 
-  console.log("userInfo: ", userInfo);
   if (userInfo) {
-    var usersListReco = props.user.recoList.map((user) => {
+    var usersListReco = props.user.recoList.map((user, i) => {
       return (
-        <div className="List">
+        <div className="List" key={i}>
           <div className="List">
-            <img src={user.imageUrl} className="Reco-Image" />
+            <img src={user.imageUrl} className="Reco-Image" alt="recoIMG" />
             <div className="Reco-Infos">
               <p className="Reco">{user.category}</p>
               <p className="Reco">{user.title}</p>
@@ -60,7 +59,12 @@ function ScreenProfile(props) {
         <Row>
           <Col xs="1" md="3" lg="4"></Col>
           <Col xs="10" md="6" lg="4" className="Editmyprofile-Box">
-            <img src="../AvatarTest.png" className="Avatar" />
+            <img
+              src="../AvatarTest.png"
+              className="User-Avatar"
+              alt="profileIMG"
+            />
+
             <Button
               className="Button-Shadow"
               style={{ boxShadow: "5px 5px #D7E8DA", height: "20px" }}
@@ -109,7 +113,6 @@ function ScreenProfile(props) {
               className="Button-Shadow"
               style={{ boxShadow: "10px 10px #D7E8DA" }}
               onClick={() => {
-                console.log("clicked");
                 history.push("/screensearchreco");
               }}
             >
@@ -121,7 +124,6 @@ function ScreenProfile(props) {
               style={{ boxShadow: "10px 10px #D7E8DA" }}
               onClick={() => {
                 navigateScreenrandom();
-                console.log("clicked");
               }}
             >
               SURPRISE ME
@@ -141,7 +143,6 @@ function ScreenProfile(props) {
               }}
               className="Button-Shadow"
               onClick={() => {
-                console.log("clicked");
                 props.addToken();
                 history.push("/screenrandom");
               }}
