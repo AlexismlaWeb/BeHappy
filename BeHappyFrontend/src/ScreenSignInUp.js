@@ -77,11 +77,64 @@ function ScreenSignInUp(props) {
         </Col>
       </Row>
       <Row>
+        <Col xs={12}>
+          <p className="Text" style={{ marginBottom: "1%" }}>
+            I HAVE AN ACCOUNT
+          </p>
+        </Col>
+      </Row>
+      <Row className="">
         <Row>
-          <Col xs={12}>
-            <p className="Text" style={{ marginBottom: "1%" }}>
-              I HAVE AN ACCOUNT
-            </p>
+          <Col
+            xs={12}
+            className="d-flex justify-content-center align-items-center"
+          >
+            <Input
+              onChange={(e) => setSignInEmail(e.target.value)}
+              className="Input"
+              placeholder="email"
+              type="email"
+            />
+          </Col>
+        </Row>
+        <Row>
+          <Col
+            xs={12}
+            className="d-flex justify-content-center align-items-center"
+          >
+            <Input
+              onChange={(e) => setSignInPassword(e.target.value)}
+              className="Input"
+              type="password"
+              placeholder="password"
+            />
+          </Col>
+        </Row>
+        <Row>
+          <Col
+            xs={12}
+            className="d-flex justify-content-center align-items-center"
+          >
+            {tabErrorsSignin}
+          </Col>
+        </Row>
+        <Row>
+          <Col
+            xs={12}
+            className="d-flex justify-content-center align-items-center"
+          >
+            <Button
+              onClick={() => handleSubmitSignin()}
+              className="Button-Shadow"
+              style={{
+                boxShadow: "10px 10px #ffd2ee",
+                width: "50%",
+                height: "70%",
+                fontSize: "20px",
+              }}
+            >
+              SIGN IN
+            </Button>
           </Col>
         </Row>
         <Row className="">
@@ -90,8 +143,30 @@ function ScreenSignInUp(props) {
               xs={12}
               className="d-flex justify-content-center align-items-center"
             >
+              <p className="Text" style={{ marginBottom: "4%" }}>
+                CREATE MY ACCOUNT
+              </p>
+            </Col>
+          </Row>
+          <Row>
+            <Col
+              xs={12}
+              className="d-flex justify-content-center align-items-center"
+            >
               <Input
-                onChange={(e) => setSignInEmail(e.target.value)}
+                onChange={(e) => setSignUpUsername(e.target.value)}
+                className="Input "
+                placeholder="username"
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col
+              xs={12}
+              className="d-flex justify-content-center align-items-center"
+            >
+              <Input
+                onChange={(e) => setSignUpEmail(e.target.value)}
                 className="Input"
                 placeholder="email"
                 type="email"
@@ -104,9 +179,9 @@ function ScreenSignInUp(props) {
               className="d-flex justify-content-center align-items-center"
             >
               <Input
-                onChange={(e) => setSignInPassword(e.target.value)}
-                className="Input"
                 type="password"
+                onChange={(e) => setSignUpPassword(e.target.value)}
+                className="Input"
                 placeholder="password"
               />
             </Col>
@@ -116,7 +191,7 @@ function ScreenSignInUp(props) {
               xs={12}
               className="d-flex justify-content-center align-items-center"
             >
-              {tabErrorsSignin}
+              {tabErrorsSignup}
             </Col>
           </Row>
           <Row>
@@ -125,7 +200,7 @@ function ScreenSignInUp(props) {
               className="d-flex justify-content-center align-items-center"
             >
               <Button
-                onClick={() => handleSubmitSignin()}
+                onClick={() => handleSubmitSignup()}
                 className="Button-Shadow"
                 style={{
                   boxShadow: "10px 10px #ffd2ee",
@@ -134,86 +209,9 @@ function ScreenSignInUp(props) {
                   fontSize: "20px",
                 }}
               >
-                SIGN IN
+                SIGN-UP
               </Button>
             </Col>
-          </Row>
-          <Row className="">
-            <Row>
-              <Col
-                xs={12}
-                className="d-flex justify-content-center align-items-center"
-              >
-                <p className="Text" style={{ marginBottom: "4%" }}>
-                  CREATE MY ACCOUNT
-                </p>
-              </Col>
-            </Row>
-            <Row>
-              <Col
-                xs={12}
-                className="d-flex justify-content-center align-items-center"
-              >
-                <Input
-                  onChange={(e) => setSignUpUsername(e.target.value)}
-                  className="Input "
-                  placeholder="username"
-                />
-              </Col>
-            </Row>
-            <Row>
-              <Col
-                xs={12}
-                className="d-flex justify-content-center align-items-center"
-              >
-                <Input
-                  onChange={(e) => setSignUpEmail(e.target.value)}
-                  className="Input"
-                  placeholder="email"
-                  type="email"
-                />
-              </Col>
-            </Row>
-            <Row>
-              <Col
-                xs={12}
-                className="d-flex justify-content-center align-items-center"
-              >
-                <Input
-                  type="password"
-                  onChange={(e) => setSignUpPassword(e.target.value)}
-                  className="Input"
-                  placeholder="password"
-                />
-              </Col>
-            </Row>
-            <Row>
-              <Col
-                xs={12}
-                className="d-flex justify-content-center align-items-center"
-              >
-                {tabErrorsSignup}
-              </Col>
-            </Row>
-            <Row>
-              <Col
-                xs={12}
-                className="d-flex justify-content-center align-items-center"
-              >
-                <Button
-                  onClick={() => handleSubmitSignup()}
-                  className="Button-Shadow"
-                  style={{
-                    boxShadow: "10px 10px #ffd2ee",
-                    width: "50%",
-                    height: "70%",
-                    fontSize: "20px",
-                  }}
-                >
-                  SIGN-UP
-                </Button>
-              </Col>
-            </Row>
           </Row>
         </Row>
       </Row>

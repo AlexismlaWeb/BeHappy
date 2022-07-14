@@ -4,27 +4,86 @@ import Modal from "react-bootstrap/Modal";
 
 import { Container, Col, Row, Input } from "reactstrap";
 import { Button } from "antd";
+import { connect } from "react-redux";
 
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Link } from "react-router-dom/cjs/react-router-dom.min";
-import { AiOutlineHeart } from "react-icons/ai";
+import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
+import { useHistory } from "react-router-dom";
 import ScreenSignInUp from "./ScreenSignInUp";
+import HeaderComposant from "./HeaderComposant";
 
-export default function ScreenRandom() {
+function ScreenRandom(props) {
+  const history = useHistory();
+
   const [show, setShow] = useState(false);
-
+  const [signText, setSignText] = useState("SIGN IN");
+  const [liked, setLiked] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
+  useEffect(() => {
+    const ConnectedorNot = () => {
+      if (props.token) {
+        setSignText("MY ACCOUNT");
+      }
+    };
+    ConnectedorNot();
+  }, [signText]);
+
+  const RedirectToMyProfile = () => {
+    if (props.token) {
+      history.push("/screenprofile");
+    } else {
+      console.log("not logged in");
+      setShow(true);
+    }
+  };
+
+  if (props.token) {
+    console.log("token: ", props.token);
+  } else {
+    console.log("no token");
+  }
+
+  var ok;
+
+  if (props.token) {
+    if (liked) {
+      ok = (
+        <AiFillHeart
+          style={{ fontSize: "40px" }}
+          onClick={() => {
+            setLiked(false);
+          }}
+        />
+      );
+    } else {
+      ok = (
+        <AiOutlineHeart
+          style={{ fontSize: "40px" }}
+          onClick={() => {
+            setLiked(true);
+            console.log("liked");
+          }}
+        />
+      );
+    }
+  } else {
+    ok = (
+      <AiOutlineHeart
+        style={{ fontSize: "40px" }}
+        onClick={() => {
+          setShow(true);
+        }}
+      />
+    );
+  }
 
   return (
     <Container fluid>
       <Row>
-        <Row>
-          <Col xs="12" md="6" lg="4" className="Myaccount-Box">
-            <img src="../AvatarTest.png" className="Avatar" alt="avatar" />
-            <Link className="Myaccount-Link">MY ACCOUNT</Link>
-          </Col>
-        </Row>
+        <HeaderComposant />
+
         <Row className="Text" style={{ marginTop: "5%" }}>
           <Col xs={4} md="6" lg="4">
             <input type="radio" value="Music" name="type" /> MUSIC
@@ -49,19 +108,27 @@ export default function ScreenRandom() {
         </Row>
 
         <Row className="Text">
-          <Col xs={12} md="6" lg="4">
+          <Col xs={12} md="6" lg="12">
             <input type="radio" value="FollowedOnly" name="type" /> FROM
             FOLLOWED LIST ONLY
           </Col>
         </Row>
         <Row>
-          <Col xs="12" md="6" lg="4" className="Bottom">
+          <Col xs="12" md="6" lg={{ span: 6, offset: 3 }} className="Bottom">
             <Button
               className="Button-Shadow"
               style={{
                 boxShadow: "10px 10px #ffd2ee",
                 width: "50%",
                 height: "70%",
+              }}
+              onClick={() => {
+                handleShow();
+                if (props.token) {
+                  history.push("/screensearchreco");
+                } else {
+                  setShow(true);
+                }
               }}
             >
               UPDATE MY HAPPY LIST
@@ -72,6 +139,14 @@ export default function ScreenRandom() {
                 boxShadow: "10px 10px #ffd2ee",
                 width: "50%",
                 height: "70%",
+              }}
+              onClick={() => {
+                handleShow();
+                if (props.token) {
+                  history.push("/screensearchuser");
+                } else {
+                  setShow(true);
+                }
               }}
             >
               EXPLORE OTHER HAPPY LIST
@@ -88,11 +163,11 @@ export default function ScreenRandom() {
           paddingBottom: "5%",
         }}
       >
-        <Col xs={12} md={6} lg={4} style={{ marginTop: "1%" }}>
+        <Col xs={12} md={6} lg={12} style={{ marginTop: "1%" }}>
           <h3 className="Title">GET LUCKY</h3>
         </Col>
         <Row>
-          <Col xs={12} sm={6} md={6} lg={4} style={{ marginBottom: "5%" }}>
+          <Col xs={12} sm={6} md={6} lg={12} style={{ marginBottom: "5%" }}>
             <p className="Text">Daft Punck, Pharrell Williams, Nile Rodgers</p>
           </Col>
         </Row>
@@ -100,7 +175,7 @@ export default function ScreenRandom() {
           <Col
             xs={{ span: 8, offset: 2 }}
             md={6}
-            lg={4}
+            lg={{ span: 4, offset: 4 }}
             style={{ marginBottom: "5%" }}
           >
             <Modal show={show} onHide={handleClose} size="lg">
@@ -117,10 +192,10 @@ export default function ScreenRandom() {
             xs={4}
             sm={6}
             md={6}
-            lg={4}
+            lg={8}
             className="d-flex justify-content-center"
           >
-            <AiOutlineHeart style={{ fontSize: "40px" }} />
+            {ok}
           </Col>
           <Col xs={8} sm={6} md={6} lg={4} style={{ textAlign: "left" }}>
             <p
@@ -136,7 +211,13 @@ export default function ScreenRandom() {
         </Row>
       </Row>
       <Row>
-        <Col xs="10" md="6" lg="4" className="Bottom" style={{ margin: "10%" }}>
+        <Col
+          xs="10"
+          md="6"
+          lg={10}
+          className="Bottom"
+          style={{ margin: "10%" }}
+        >
           <Button
             className="Button-Shadow"
             style={{
@@ -146,7 +227,6 @@ export default function ScreenRandom() {
               fontSize: "20px",
             }}
             onClick={() => {
-              handleShow();
               console.log("clicked");
             }}
           >
@@ -157,3 +237,9 @@ export default function ScreenRandom() {
     </Container>
   );
 }
+
+function mapStateToProps(state) {
+  return { token: state.token };
+}
+
+export default connect(mapStateToProps, null)(ScreenRandom);

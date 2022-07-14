@@ -1,18 +1,16 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
-import { useParams } from "react-router-dom";
 import { connect } from "react-redux";
-import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Container, Col, Row } from "reactstrap";
 import { Button } from "antd";
-import { Input } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronCircleRight,
   faXmarkCircle,
   faCirclePlus,
 } from "@fortawesome/free-solid-svg-icons";
+import { Redirect } from "react-router-dom/cjs/react-router-dom.min";
 
 export default function ScreenUser() {
   return (
@@ -171,12 +169,18 @@ export default function ScreenUser() {
           <Button
             className="Button-Shadow"
             style={{ boxShadow: "10px 10px #F1E2FF" }}
+            onClick={() => {
+              console.log("clicked");
+            }}
           >
             UPDATE MY LIST
           </Button>
           <Button
             className="Button-Shadow"
             style={{ boxShadow: "10px 10px #F1E2FF" }}
+            onClick={() => {
+              console.log("clicked");
+            }}
           >
             SURPRISE ME
           </Button>
