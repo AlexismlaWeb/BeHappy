@@ -12,7 +12,6 @@ var userModel = require("../models/users");
 // Get all recommendations
 router.get("/getAllRecommendations", async function (req, res) {
   var allRecommendations = await recoModel.find();
-  console.log(allRecommendations);
   res.json(allRecommendations);
 });
 
