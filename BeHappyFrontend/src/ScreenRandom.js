@@ -44,13 +44,45 @@ function ScreenRandom(props) {
     ConnectedorNot();
   }, [signText]);
 
+  // for (var i = 0; i < allRecommendations.length; i++) {
+  //   if (allRecommendations[i].title === recommendationsRandom.title) {
+  //     console.log(
+  //       "good => " +
+  //         allRecommendations[i].title +
+  //         " === " +
+  //         recommendationsRandom.title
+  //     );
+  //   }
+  // }
+
+  // const likedOrNot = (e) => recommendations.includes(e.APIid);
+  // console.log("likedOrNot =>", recommendations.some(likedOrNot));
+  var bool = false;
   if (props.token) {
-    if (liked) {
+    var recommendations = [props.user];
+    // console.log("recommendations =>", recommendations);
+    for (const item of recommendations) {
+      // console.log("item.recoList =>", item.recoList);
+      if (item.recoList) {
+        for (const item2 of item.recoList) {
+          if (item2.APIid === recommendationsRandom.APIid) {
+            console.log(
+              "good => " + item2.title + " === " + recommendationsRandom.title
+            );
+            bool = true;
+          }
+        }
+      }
+    }
+  }
+
+  if (props.token) {
+    if (bool) {
       heart = (
         <AiFillHeart
           style={{ fontSize: "30px" }}
           onClick={() => {
-            setLiked(false);
+            console.log("liked =>", bool);
           }}
         />
       );
@@ -59,7 +91,7 @@ function ScreenRandom(props) {
         <AiOutlineHeart
           style={{ fontSize: "30px" }}
           onClick={() => {
-            setLiked(true);
+            console.log("liked =>", bool);
           }}
         />
       );
@@ -96,7 +128,6 @@ function ScreenRandom(props) {
   const RecommendationRandom = () => {
     const randomRecommendation =
       Recommendations[Math.floor(Math.random() * Recommendations.length)];
-    console.log(randomRecommendation);
     setRecommendationsRandom(randomRecommendation);
   };
 
@@ -329,7 +360,7 @@ function ScreenRandom(props) {
 }
 
 function mapStateToProps(state) {
-  return { token: state.token };
+  return { token: state.token, user: state.user };
 }
 
 export default connect(mapStateToProps, null)(ScreenRandom);
