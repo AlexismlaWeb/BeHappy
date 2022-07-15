@@ -44,25 +44,11 @@ function ScreenRandom(props) {
     ConnectedorNot();
   }, [signText]);
 
-  // for (var i = 0; i < allRecommendations.length; i++) {
-  //   if (allRecommendations[i].title === recommendationsRandom.title) {
-  //     console.log(
-  //       "good => " +
-  //         allRecommendations[i].title +
-  //         " === " +
-  //         recommendationsRandom.title
-  //     );
-  //   }
-  // }
-
-  // const likedOrNot = (e) => recommendations.includes(e.APIid);
-  // console.log("likedOrNot =>", recommendations.some(likedOrNot));
   var bool = false;
   if (props.token) {
     var recommendations = [props.user];
-    // console.log("recommendations =>", recommendations);
+
     for (const item of recommendations) {
-      // console.log("item.recoList =>", item.recoList);
       if (item.recoList) {
         for (const item2 of item.recoList) {
           if (item2.APIid === recommendationsRandom.APIid) {

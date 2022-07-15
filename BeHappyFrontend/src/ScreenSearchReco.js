@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import { useHistory } from "react-router-dom";
+import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Container, Col, Row } from "reactstrap";
@@ -11,9 +12,13 @@ import { Button } from "antd";
 import { Input } from "reactstrap";
 import HeaderComposant from "./HeaderComposant";
 import { Redirect } from "react-router-dom/cjs/react-router-dom.min";
+import Modal from "react-bootstrap/Modal";
 
 function ScreenSearchReco(props) {
   const history = useHistory();
+
+  const [show, setShow] = useState(false);
+
   const [searchCategory, setSearchCategory] = useState("Category");
   const [searchTitle, setSearchTitle] = useState("");
 
@@ -23,6 +28,9 @@ function ScreenSearchReco(props) {
 
   const [resultsList, setResultsList] = useState([]);
   const [error, setError] = useState("");
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
 
   // RÉCUPÉRER LE TOKEN DE L'UTILISATEUR CONNECTÉ DANS LE STORE
   let token = "KmWnmF-_xvjfykiesrJncP-xtc19esy0";
@@ -46,6 +54,7 @@ function ScreenSearchReco(props) {
       if (response.length === 0) {
         setError("OUPS... THERE IS NO RESULT");
       } else {
+        handleShow();
         setResultsList(response);
         // AFFICHER LES PROPOSITIONS
       }
@@ -68,6 +77,25 @@ function ScreenSearchReco(props) {
 
   // FONCTION à activer si click sur un bouton LIKE
   function likeReco() {}
+
+  // MAP POUR AFFICHER LES PROPOSITIONS
+
+  if (resultsList.length > 0) {
+    var mapResultsList = resultsList.map((element, index) => {
+      return (
+        <div className="List" key={index}>
+          <div className="List">
+            <img src={element.imageUrl} className="Reco-Image" alt="recoIMG" />
+            <div className="Reco-Infos">
+              <p className="Reco">{element.title}</p>
+            </div>
+          </div>
+          <AiOutlineHeart style={{ fontSize: "20px" }} />
+        </div>
+      );
+    });
+  }
+
   if (props.token) {
     return (
       <Container fluid>
@@ -181,6 +209,23 @@ function ScreenSearchReco(props) {
           </Col>
           <Col xs="1" md="3" lg="4" className="col3"></Col>
         </Row>
+        <Modal show={show} onHide={handleClose} size="lg">
+          <Modal.Header closeButton></Modal.Header>
+          <Modal.Body>
+            <Row style={{ backgroundColor: "#ffd2ee" }} className="Main-Row">
+              <Col xs="1" md="3" lg="4"></Col>
+              <Col
+                xs="10"
+                md="6"
+                lg="4"
+                style={{ height: "420px", overflowY: "auto" }}
+              >
+                {mapResultsList}
+              </Col>
+              <Col xs="1" md="3" lg="4"></Col>
+            </Row>
+          </Modal.Body>
+        </Modal>
       </Container>
     );
   } else {
@@ -189,7 +234,7 @@ function ScreenSearchReco(props) {
 }
 
 function mapStateToProps(state) {
-  return { token: state.token };
+  return { token: state.token, user: state.user };
 }
 
 export default connect(mapStateToProps, null)(ScreenSearchReco);
