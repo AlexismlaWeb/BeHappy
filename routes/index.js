@@ -31,28 +31,77 @@ router.get("/getUserInfoByToken/:tokenFromFront", async function (req, res) {
 // ADD RECO
 router.post("/addReco", async function (req, res, next) {
   let result = false;
-
-  let newReco = new recoModel({
-    category: req.body.categoryFromFront,
-    title: req.body.titleFromFront,
-    imageUrl: req.body.linkFromFront,
-    APIid: req.body.APIidFromFront,
-    usersList: [req.body.tokenFromFront],
-  });
-  let saveReco = await newReco.save();
-
+  let savedReco = {};
+  let savedUser = {};
   let user = await userModel.findOne({
     token: req.body.tokenFromFront,
   });
-  user.recoList.push(saveReco.id);
-  let saveUser = await user.save();
 
-  if (saveUser && saveReco) {
+  if (req.body.alreadyInDBFromFront == "true") {
+    // "true" en string car via postman, il faudra sûrement changer en boolean quand la route sera vraiment appelée par le front
+    user.recoList.push(req.body.recoIdFromFront);
+    savedUser = await user.save();
+
+    let reco = await recoModel.findOne({
+      _id: req.body.recoIdFromFront,
+    });
+    reco.usersList.push(user.id);
+    savedReco = await reco.save();
+  } else if (req.body.alreadyInDBFromFront == "false") {
+    let newReco = new recoModel({
+      category: req.body.categoryFromFront,
+      title: req.body.titleFromFront,
+      imageUrl: req.body.imageUrlFromFront,
+      APIid: req.body.APIidFromFront,
+      usersList: [user.id],
+    });
+    savedReco = await newReco.save();
+
+    user.recoList.push(savedReco.id);
+    savedUser = await user.save();
+  }
+
+  if (savedUser && savedReco) {
     result = true;
   }
 
-  res.json({ result, saveReco, saveUser });
+  res.json({ result, savedReco, savedUser });
 });
+
+// DELETE RECO
+router.delete(
+  "/deleteReco/:tokenFromFront/:recoIdFromFront",
+  async function (req, res, next) {
+    let result = false;
+    let savedReco = {};
+
+    let user = await userModel.findOne({
+      token: req.params.tokenFromFront,
+    });
+
+    let reco = await recoModel.findOne({
+      _id: req.params.recoIdFromFront,
+    });
+
+    user.recoList = user.recoList.filter((e) => e != reco.id);
+    savedUser = await user.save();
+
+    if (reco.usersList.length > 1) {
+      reco.usersList = reco.usersList.filter((e) => e != user.id);
+      savedReco = await reco.save();
+      if (savedUser && savedReco) {
+        result = true;
+      }
+    } else if (reco.usersList.length === 1) {
+      let deletedReco = await recoModel.deleteOne({ _id: reco.id });
+      if (savedUser && deletedReco) {
+        result = true;
+      }
+    }
+
+    res.json({ result, savedUser, savedReco });
+  }
+);
 
 // SEARCH FILM
 router.post("/searchFilm", async function (req, res, next) {
@@ -78,6 +127,7 @@ router.post("/searchFilm", async function (req, res, next) {
         APIid: data.APIid,
         imageUrl: data.imageUrl,
         id: data.id,
+        followers: data.usersList.length,
       });
     } else {
       let APIid = element.id;
@@ -117,6 +167,7 @@ router.post("/searchSerie", async function (req, res, next) {
         APIid: data.APIid,
         imageUrl: data.imageUrl,
         id: data.id,
+        followers: data.usersList.length,
       });
     } else {
       let APIid = element.id;
@@ -160,6 +211,7 @@ router.post("/searchBook", async function (req, res, next) {
         APIid: data.APIid,
         imageUrl: data.imageUrl,
         id: data.id,
+        followers: data.usersList.length,
       });
     } else {
       booksList.push({
@@ -212,6 +264,7 @@ router.post("/searchPodcast", async function (req, res, next) {
     if (data) {
       element.alreadyInDB = true;
       element.id = data.id;
+      element.followers = data.usersList.length;
     }
   }
 

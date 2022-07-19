@@ -21,13 +21,14 @@ function ScreenSearchReco(props) {
 
   const [searchCategory, setSearchCategory] = useState("Category");
   const [searchTitle, setSearchTitle] = useState("");
+  const [searchError, setSearchError] = useState("");
 
   const [addCategory, setAddCategory] = useState("Category");
   const [addTitle, setAddTitle] = useState("");
   const [addLink, setAddLink] = useState("");
+  const [addError, setAddError] = useState("");
 
   const [resultsList, setResultsList] = useState([]);
-  const [error, setError] = useState("");
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -36,11 +37,16 @@ function ScreenSearchReco(props) {
   let token = "KmWnmF-_xvjfykiesrJncP-xtc19esy0";
 
   // SEARCH API & BDD
-  async function searchReco(category, title, link) {
-    console.log("IN searchReco() =>", category, title, link);
+  async function searchReco(category, title, link, origin) {
+    console.log("IN searchReco() =>", category, title, link, origin);
+    setSearchError("");
+    setAddError("");
 
-    setError("");
-    if (category === "Other") {
+    let error = "";
+
+    if (!category || category === "Category" || !title) {
+      error = "OUPS, THERE IS AN EMPTY FIELD";
+    } else if (category === "Other") {
       addReco(category, title, link);
     } else {
       let data = await fetch(`/search${category}`, {
@@ -52,12 +58,18 @@ function ScreenSearchReco(props) {
       let response = await data.json();
       console.log("response =>", response);
       if (response.length === 0) {
-        setError("OUPS... THERE IS NO RESULT");
+        error = "OUPS... THERE IS NO RESULT";
       } else {
         handleShow();
         setResultsList(response);
         // AFFICHER LES PROPOSITIONS
       }
+    }
+
+    if (origin === "searchClick") {
+      setSearchError(error);
+    } else if (origin === "addClick") {
+      setAddError(error);
     }
 
     setSearchCategory("Category");
@@ -117,10 +129,9 @@ function ScreenSearchReco(props) {
               name="searchCategory"
               id="searchCategory"
               value={searchCategory}
-              defaultValue={"default"}
               onChange={(e) => setSearchCategory(e.target.value)}
             >
-              <option value={"default"}>Category</option>
+              <option value="Category">Category</option>
               <option value="Film">Film</option>
               <option value="Serie">Serie</option>
               <option value="Book">Book</option>
@@ -137,12 +148,12 @@ function ScreenSearchReco(props) {
               className="Button-Submit"
               onClick={() => {
                 console.log("SEARCH Click =>", searchCategory, searchTitle);
-                searchReco(searchCategory, searchTitle);
+                searchReco(searchCategory, searchTitle, null, "searchClick");
               }}
             >
               SEARCH
             </Button>
-            <p className="Text">{error}</p>
+            <p className="Text">{searchError}</p>
             <p className="Text">ADD YOUR RECO FROM SCRATCH</p>
             <Input
               className="Input"
@@ -150,10 +161,9 @@ function ScreenSearchReco(props) {
               name="searchCategory"
               id="searchCategory"
               value={addCategory}
-              defaultValue={"default"}
               onChange={(e) => setAddCategory(e.target.value)}
             >
-              <option value={"default"}>Category</option>
+              <option value="Category">Category</option>
               <option value="Film">Film</option>
               <option value="Serie">Serie</option>
               <option value="Book">Book</option>
@@ -177,11 +187,12 @@ function ScreenSearchReco(props) {
               className="Button-Submit"
               onClick={() => {
                 console.log("ADD click =>", addCategory, addTitle, addLink);
-                searchReco(addCategory, addTitle, addLink);
+                searchReco(addCategory, addTitle, addLink, "addClick");
               }}
             >
               ADD TO MY HAPPY LIST
             </Button>
+            <p className="Text">{addError}</p>
           </Col>
           <Col xs="1" md="3" lg="4"></Col>
         </Row>

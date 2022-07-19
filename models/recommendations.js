@@ -6,7 +6,7 @@ const recoSchema = mongoose.Schema({
   APIid: String,
   link: String,
   imageUrl: String,
-  usersList: [String],
+  usersList: [{ type: mongoose.Schema.Types.ObjectId, ref: "users" }],
 });
 
 const recoModel = mongoose.model("recos", recoSchema);
