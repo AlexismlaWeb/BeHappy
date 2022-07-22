@@ -207,6 +207,12 @@ h4 {
   margin: 3px;
 }
 
+.Reco-Likes {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 /* SCREENSEARCHUSER */
 
 .User-Avatar {

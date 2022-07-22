@@ -33,6 +33,7 @@ router.post("/addReco", async function (req, res, next) {
   let result = false;
   let savedReco = {};
   let savedUser = {};
+  console.log("tokenFromFront =>", req.body.tokenFromFront);
   let user = await userModel.findOne({
     token: req.body.tokenFromFront,
   });
@@ -106,6 +107,14 @@ router.delete(
 // SEARCH FILM
 router.post("/searchFilm", async function (req, res, next) {
   let encodedQuery = encodeURI(req.body.queryFromFront);
+  let user = await userModel
+    .findOne({ token: req.body.tokenFromFront })
+    .populate({
+      path: "recoList",
+      populate: {
+        path: "_id",
+      },
+    });
 
   // SEARCH IN THE API
   var data = request(
@@ -121,20 +130,31 @@ router.post("/searchFilm", async function (req, res, next) {
       APIid: element.id,
     });
     if (data) {
+      let alreadyLiked = false;
+      for (element of user.recoList) {
+        if (element.id === data.id) {
+          alreadyLiked = true;
+        }
+      }
       moviesList.push({
+        category: "Movie",
         title: data.title,
-        alreadyInDB: true,
         APIid: data.APIid,
-        imageUrl: data.imageUrl,
+        alreadyInDB: true,
         id: data.id,
+        alreadyLiked: alreadyLiked,
         followers: data.usersList.length,
+        imageUrl: data.imageUrl,
       });
     } else {
-      let APIid = element.id;
       moviesList.push({
+        category: "Movie",
         title: element.original_title,
+        APIid: element.id.toString(),
         alreadyInDB: false,
-        APIid: APIid.toString(),
+        id: null,
+        alreadyLiked: false,
+        followers: 0,
         imageUrl: `https://image.tmdb.org/t/p/w185${element.poster_path}`,
       });
     }
@@ -146,6 +166,14 @@ router.post("/searchFilm", async function (req, res, next) {
 // SEARCH SERIE
 router.post("/searchSerie", async function (req, res, next) {
   let encodedQuery = encodeURI(req.body.queryFromFront);
+  let user = await userModel
+    .findOne({ token: req.body.tokenFromFront })
+    .populate({
+      path: "recoList",
+      populate: {
+        path: "_id",
+      },
+    });
 
   // SEARCH IN THE API
   var data = request(
@@ -161,20 +189,31 @@ router.post("/searchSerie", async function (req, res, next) {
       APIid: element.id,
     });
     if (data) {
+      let alreadyLiked = false;
+      for (element of user.recoList) {
+        if (element.id === data.id) {
+          alreadyLiked = true;
+        }
+      }
       seriesList.push({
+        category: "Serie",
         title: data.title,
-        alreadyInDB: true,
         APIid: data.APIid,
-        imageUrl: data.imageUrl,
+        alreadyInDB: true,
         id: data.id,
+        alreadyLiked: alreadyLiked,
         followers: data.usersList.length,
+        imageUrl: data.imageUrl,
       });
     } else {
-      let APIid = element.id;
       seriesList.push({
+        category: "Serie",
         title: element.original_name,
+        APIid: element.id.toString(),
         alreadyInDB: false,
-        APIid: APIid.toString(),
+        id: null,
+        alreadyLiked: false,
+        followers: 0,
         imageUrl: `https://image.tmdb.org/t/p/w185${element.poster_path}`,
       });
     }
@@ -187,6 +226,14 @@ router.post("/searchSerie", async function (req, res, next) {
 router.post("/searchBook", async function (req, res, next) {
   let APIkey = "AIzaSyDHHhDC57Jk0lZABqbjA0mvuH3NnC0zyUg";
   let encodedQuery = encodeURI(req.body.queryFromFront);
+  let user = await userModel
+    .findOne({ token: req.body.tokenFromFront })
+    .populate({
+      path: "recoList",
+      populate: {
+        path: "_id",
+      },
+    });
 
   // SEARCH IN THE API
   var data = request(
@@ -205,9 +252,16 @@ router.post("/searchBook", async function (req, res, next) {
       APIid: element.id,
     });
     if (data) {
+      let alreadyLiked = false;
+      for (element of user.recoList) {
+        if (element.id === data.id) {
+          alreadyLiked = true;
+        }
+      }
       booksList.push({
         title: data.title,
         alreadyInDB: true,
+        alreadyLiked: alreadyLiked,
         APIid: data.APIid,
         imageUrl: data.imageUrl,
         id: data.id,
@@ -217,6 +271,7 @@ router.post("/searchBook", async function (req, res, next) {
       booksList.push({
         title: element.volumeInfo.title,
         alreadyInDB: false,
+        alreadyLiked: false,
         APIid: element.id,
         imageUrl: `../bookimage${index}.png`,
       });
@@ -229,6 +284,14 @@ router.post("/searchBook", async function (req, res, next) {
 // SEARCH A PODCAST //
 router.post("/searchPodcast", async function (req, res, next) {
   let encodedQuery = encodeURI(req.body.queryFromFront);
+  let user = await userModel
+    .findOne({ token: req.body.tokenFromFront })
+    .populate({
+      path: "recoList",
+      populate: {
+        path: "_id",
+      },
+    });
 
   // SEARCH IN THE API
   const client = Client({ apiKey: "5ab7d2dd84224806a056cfe9a777dd7c" });
@@ -248,6 +311,7 @@ router.post("/searchPodcast", async function (req, res, next) {
           title: element.title_original,
           APIid: element.id,
           alreadyInDB: false,
+          alreadyLiked: false,
           imageUrl: element.image,
         });
       }
@@ -261,8 +325,14 @@ router.post("/searchPodcast", async function (req, res, next) {
     let data = await recoModel.findOne({
       APIid: element.APIid,
     });
+
     if (data) {
       element.alreadyInDB = true;
+      for (reco of user.recoList) {
+        if (reco.id === data.id) {
+          element.alreadyLiked = true;
+        }
+      }
       element.id = data.id;
       element.followers = data.usersList.length;
     }

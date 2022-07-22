@@ -33,10 +33,9 @@ function ScreenSearchReco(props) {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  // RÉCUPÉRER LE TOKEN DE L'UTILISATEUR CONNECTÉ DANS LE STORE
-  let token = "KmWnmF-_xvjfykiesrJncP-xtc19esy0";
+  let heart;
 
-  // SEARCH API & BDD
+  // SEARCH IN  API & BDD
   async function searchReco(category, title, link, origin) {
     console.log("IN searchReco() =>", category, title, link, origin);
     setSearchError("");
@@ -47,12 +46,12 @@ function ScreenSearchReco(props) {
     if (!category || category === "Category" || !title) {
       error = "OUPS, THERE IS AN EMPTY FIELD";
     } else if (category === "Other") {
-      addReco(category, title, link);
+      // addOther(category, title, link);
     } else {
       let data = await fetch(`/search${category}`, {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: "queryFromFront=" + title,
+        body: "queryFromFront=" + title + "&tokenFromFront=" + props.token,
       });
 
       let response = await data.json();
@@ -79,21 +78,113 @@ function ScreenSearchReco(props) {
     setAddLink("");
   }
 
-  // FONCTION à activer si :
-  // category = other dans searchReco()
-  // OU si click sur un bouton ADD
+  // FONCTION ADD (activated when you click on the heart icon)
+  async function addReco(element, index) {
+    console.log("element clicked, in addReco =>", element, index);
 
-  function addReco(category, title, link) {
-    console.log("in addReco() =>", category, title, link);
+    // UPDATE DATABASE
+    let data = await fetch("/addReco", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body:
+        "tokenFromFront=" +
+        props.token +
+        "&alreadyInDBFromFront=" +
+        element.alreadyInDB +
+        "&categoryFromFront=" +
+        element.category +
+        "&titleFromFront=" +
+        element.title +
+        "&imageUrlFromFront=" +
+        element.imageUrl +
+        "&APIidFromFront=" +
+        element.APIid +
+        "&recoIdFromFront=" +
+        element.id,
+    });
+    let response = await data.json();
+
+    // UPDATE RESULTSLIST FOR THE FRONTEND
+    let newList = resultsList;
+    resultsList[index].alreadyInDB = true;
+    resultsList[index].alreadyLiked = true;
+    resultsList[index].followers = resultsList[index].followers + 1;
+    if (response.savedReco) {
+      resultsList[index].id = response.savedReco._id;
+    }
+    setResultsList([...newList]);
+    console.log("resultsList after modification =>", resultsList);
   }
 
-  // FONCTION à activer si click sur un bouton LIKE
-  function likeReco() {}
+  // FONCTION ADDOTHER à activer si category = other dans searchReco()
+  async function addOther(addTitle, addLink) {
+    console.log("click addOther");
+
+    let data = await fetch("/addReco", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body:
+        "tokenFromFront=" +
+        props.token +
+        "&alreadyInDBFromFront=false&categoryFromFront=Other&titleFromFront=" +
+        addTitle +
+        "&imageUrlFromFront=" +
+        addLink +
+        "&APIidFromFront=null",
+    });
+    let response = await data.json();
+    console.log("response from addOther=>", response);
+  }
+
+  // FUNCTION DELETE (activated when you click on the full heart)
+  async function deleteReco(element, index) {
+    console.log("element clicked, in deleteReco =>", element, index);
+    console.log("element.id =>", element.id);
+
+    //1 UPDATE DATABASE
+    let data = await fetch(`/deleteReco/${props.token}/${element.id}`, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    });
+    let response = await data.json();
+
+    //2 UPDATE RESULTSLIST FOR THE FRONT END
+    let newList = resultsList;
+    resultsList[index].alreadyLiked = false;
+    resultsList[index].followers = resultsList[index].followers - 1;
+    if (!response.savedReco._id) {
+      resultsList[index].alreadyInDB = false;
+      resultsList[index].id = null;
+      resultsList[index].followers = 0;
+    }
+    setResultsList([...newList]);
+    console.log("resultsList after modification =>", resultsList);
+  }
 
   // MAP POUR AFFICHER LES PROPOSITIONS
-
   if (resultsList.length > 0) {
     var mapResultsList = resultsList.map((element, index) => {
+      if (element.alreadyLiked == true) {
+        heart = (
+          <AiFillHeart
+            style={{ fontSize: "25px" }}
+            onClick={() => {
+              console.log("ADD Click, index", index);
+              deleteReco(element, index);
+            }}
+          />
+        );
+      } else if (element.alreadyLiked == false) {
+        heart = (
+          <AiOutlineHeart
+            style={{ fontSize: "25px" }}
+            onClick={() => {
+              console.log("DELETE Click");
+              addReco(element, index);
+            }}
+          />
+        );
+      }
       return (
         <div className="List" key={index}>
           <div className="List">
@@ -102,7 +193,10 @@ function ScreenSearchReco(props) {
               <p className="Reco">{element.title}</p>
             </div>
           </div>
-          <AiOutlineHeart style={{ fontSize: "20px" }} />
+          <div className="Reco-Likes">
+            {heart}
+            <p className="Reco">{element.followers}</p>
+          </div>
         </div>
       );
     });
