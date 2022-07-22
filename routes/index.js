@@ -312,9 +312,12 @@ router.post("/searchPodcast", async function (req, res, next) {
     .then((response) => {
       for (let element of response.data.results) {
         podcastsList.push({
+          category: "Podcast",
           title: element.title_original,
           APIid: element.id,
           alreadyInDB: false,
+          id: null,
+          followers: 0,
           alreadyLiked: false,
           imageUrl: element.image,
         });
