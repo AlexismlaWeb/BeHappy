@@ -259,20 +259,24 @@ router.post("/searchBook", async function (req, res, next) {
         }
       }
       booksList.push({
+        category: "Book",
         title: data.title,
-        alreadyInDB: true,
-        alreadyLiked: alreadyLiked,
         APIid: data.APIid,
-        imageUrl: data.imageUrl,
+        alreadyInDB: true,
         id: data.id,
+        alreadyLiked: alreadyLiked,
         followers: data.usersList.length,
+        imageUrl: data.imageUrl,
       });
     } else {
       booksList.push({
+        category: "Book",
         title: element.volumeInfo.title,
-        alreadyInDB: false,
-        alreadyLiked: false,
         APIid: element.id,
+        alreadyInDB: false,
+        id: null,
+        alreadyLiked: false,
+        followers: 0,
         imageUrl: `../bookimage${index}.png`,
       });
     }

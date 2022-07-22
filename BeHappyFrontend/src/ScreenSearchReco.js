@@ -106,12 +106,10 @@ function ScreenSearchReco(props) {
 
     // UPDATE RESULTSLIST FOR THE FRONTEND
     let newList = resultsList;
-    resultsList[index].alreadyInDB = true;
-    resultsList[index].alreadyLiked = true;
-    resultsList[index].followers = resultsList[index].followers + 1;
-    if (response.savedReco) {
-      resultsList[index].id = response.savedReco._id;
-    }
+    newList[index].alreadyInDB = true;
+    newList[index].alreadyLiked = true;
+    newList[index].followers = resultsList[index].followers + 1;
+    newList[index].id = response.savedReco._id;
     setResultsList([...newList]);
     console.log("resultsList after modification =>", resultsList);
   }
@@ -150,12 +148,12 @@ function ScreenSearchReco(props) {
 
     //2 UPDATE RESULTSLIST FOR THE FRONT END
     let newList = resultsList;
-    resultsList[index].alreadyLiked = false;
+    newList[index].alreadyLiked = false;
     resultsList[index].followers = resultsList[index].followers - 1;
     if (!response.savedReco._id) {
-      resultsList[index].alreadyInDB = false;
-      resultsList[index].id = null;
-      resultsList[index].followers = 0;
+      newList[index].alreadyInDB = false;
+      newList[index].id = null;
+      newList[index].followers = 0;
     }
     setResultsList([...newList]);
     console.log("resultsList after modification =>", resultsList);
@@ -169,7 +167,7 @@ function ScreenSearchReco(props) {
           <AiFillHeart
             style={{ fontSize: "25px" }}
             onClick={() => {
-              console.log("ADD Click, index", index);
+              console.log("DELETE Click, index", index);
               deleteReco(element, index);
             }}
           />
@@ -179,7 +177,7 @@ function ScreenSearchReco(props) {
           <AiOutlineHeart
             style={{ fontSize: "25px" }}
             onClick={() => {
-              console.log("DELETE Click");
+              console.log("ADD Click");
               addReco(element, index);
             }}
           />
