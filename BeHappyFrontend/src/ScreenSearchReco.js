@@ -30,10 +30,13 @@ function ScreenSearchReco(props) {
 
   const [resultsList, setResultsList] = useState([]);
 
+  const [clickOrigin, setClickOrigin] = useState(false);
+
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
   let heart;
+  let button;
 
   // SEARCH IN  API & BDD
   async function searchReco(category, title, link, origin) {
@@ -41,12 +44,16 @@ function ScreenSearchReco(props) {
     setSearchError("");
     setAddError("");
 
+    if (origin === "addClick") {
+      setClickOrigin(true);
+    }
+
     let error = "";
 
     if (!category || category === "Category" || !title) {
       error = "OUPS, THERE IS AN EMPTY FIELD";
     } else if (category === "Other") {
-      // addOther(category, title, link);
+      addOther(category, title, link);
     } else {
       let data = await fetch(`/search${category}`, {
         method: "POST",
@@ -56,7 +63,10 @@ function ScreenSearchReco(props) {
 
       let response = await data.json();
       console.log("response =>", response);
-      if (response.length === 0) {
+      if (response.length === 0 && origin === "addClick") {
+        console.log("déclenchement de addClick avec =>", category, title, link);
+        addOther(category, title, link);
+      } else if (response.length === 0 && origin === "searchClick") {
         error = "OUPS... THERE IS NO RESULT";
       } else {
         handleShow();
@@ -73,9 +83,6 @@ function ScreenSearchReco(props) {
 
     setSearchCategory("Category");
     setSearchTitle("");
-    setAddCategory("");
-    setAddTitle("");
-    setAddLink("");
   }
 
   // FONCTION ADD (activated when you click on the heart icon)
@@ -115,22 +122,20 @@ function ScreenSearchReco(props) {
   }
 
   // FONCTION ADDOTHER à activer si category = other dans searchReco()
-  async function addOther(addTitle, addLink) {
-    console.log("click addOther");
+  async function addOther(category, title, link) {
+    console.log("click addOther =>", category, title, link);
 
     let data = await fetch("/addReco", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body:
-        "tokenFromFront=" +
-        props.token +
-        "&alreadyInDBFromFront=false&categoryFromFront=Other&titleFromFront=" +
-        addTitle +
-        "&imageUrlFromFront=" +
-        addLink +
-        "&APIidFromFront=null",
+      body: `tokenFromFront=${
+        props.token
+      }&categoryFromFront=${category}&alreadyInDBFromFront=${false}&titleFromFront=${title}&imageUrlFromFront=${link}&APIidFromFront=${null}`,
     });
     let response = await data.json();
+    setAddCategory("");
+    setAddTitle("");
+    setAddLink("");
     console.log("response from addOther=>", response);
   }
 
@@ -198,6 +203,23 @@ function ScreenSearchReco(props) {
         </div>
       );
     });
+  }
+
+  //
+
+  if (clickOrigin) {
+    button = (
+      <Button
+        className="Button-Shadow"
+        style={{ boxShadow: "10px 10px #ffd2ee" }}
+        onClick={() => {
+          addOther(addCategory, addTitle, addLink);
+          handleClose();
+        }}
+      >
+        ADD FROM SCRATCH
+      </Button>
+    );
   }
 
   if (props.token) {
@@ -324,6 +346,7 @@ function ScreenSearchReco(props) {
                 style={{ height: "420px", overflowY: "auto" }}
               >
                 {mapResultsList}
+                {button}
               </Col>
               <Col xs="1" md="3" lg="4"></Col>
             </Row>
