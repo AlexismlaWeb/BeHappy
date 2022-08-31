@@ -33,12 +33,24 @@ router.post("/addReco", async function (req, res, next) {
   let result = false;
   let savedReco = {};
   let savedUser = {};
-  console.log("tokenFromFront =>", req.body.tokenFromFront);
+
+  console.log(
+    "infos =>",
+    req.body.tokenFromFront,
+    req.body.categoryFromFront,
+    req.body.alreadyInDBFromFront,
+    req.body.titleFromFront,
+    req.body.imageUrlFromFront,
+    req.body.APIidFromFront
+  );
+  console.log("type of alreadyInDB =>", typeof req.body.alreadyInDBFromFront);
+  console.log("type of APIidFromFront =>", typeof req.body.APIidFromFront);
   let user = await userModel.findOne({
     token: req.body.tokenFromFront,
   });
 
-  if (req.body.alreadyInDBFromFront == "true") {
+  if (req.body.alreadyInDBFromFront === "true") {
+    console.log("dans alreadyInDB === true");
     // "true" en string car via postman, il faudra sûrement changer en boolean quand la route sera vraiment appelée par le front
     user.recoList.push(req.body.recoIdFromFront);
     savedUser = await user.save();
@@ -48,7 +60,9 @@ router.post("/addReco", async function (req, res, next) {
     });
     reco.usersList.push(user.id);
     savedReco = await reco.save();
-  } else if (req.body.alreadyInDBFromFront == "false") {
+  } else if (req.body.alreadyInDBFromFront === "false") {
+    console.log("dans alreadyInDB === false");
+
     let newReco = new recoModel({
       category: req.body.categoryFromFront,
       title: req.body.titleFromFront,

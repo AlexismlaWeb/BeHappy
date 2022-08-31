@@ -12,6 +12,7 @@ import { Input } from "reactstrap";
 import HeaderComposant from "./HeaderComposant";
 import { Redirect } from "react-router-dom/cjs/react-router-dom.min";
 import Modal from "react-bootstrap/Modal";
+import { trusted } from "mongoose";
 
 function ScreenSearchReco(props) {
   const history = useHistory();
@@ -29,23 +30,26 @@ function ScreenSearchReco(props) {
 
   const [resultsList, setResultsList] = useState([]);
 
+  const [formClick, setFormClick] = useState("");
+  const [showButton, setShowButton] = useState(true);
+  const [pendingReco, setPendingReco] = useState({});
+
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
   let heart;
+  let button;
 
-  // SEARCH IN  API & BDD
-  async function searchReco(category, title, link, origin) {
-    console.log("IN searchReco() =>", category, title, link, origin);
+  // SEARCHRECO IN API & BDD
+  async function searchReco(category, title, link) {
     setSearchError("");
     setAddError("");
-
     let error = "";
 
     if (!category || category === "Category" || !title) {
       error = "OUPS, THERE IS AN EMPTY FIELD";
     } else if (category === "Other") {
-      // addOther(category, title, link);
+      addFromScratch(category, title, link);
     } else {
       let data = await fetch(`/search${category}`, {
         method: "POST",
@@ -54,19 +58,25 @@ function ScreenSearchReco(props) {
       });
 
       let response = await data.json();
-      console.log("response =>", response);
-      if (response.length === 0) {
+      console.log("response from searchReco =>", response);
+      if (response.length === 0 && formClick === "addClick") {
+        addFromScratch(category, title, link);
+      } else if (response.length === 0 && formClick === "searchClick") {
         error = "OUPS... THERE IS NO RESULT";
       } else {
         handleShow();
         setResultsList(response);
-        // AFFICHER LES PROPOSITIONS
+        setPendingReco({
+          category: addCategory,
+          title: addTitle,
+          link: addLink,
+        });
       }
     }
 
-    if (origin === "searchClick") {
+    if (formClick === "searchClick") {
       setSearchError(error);
-    } else if (origin === "addClick") {
+    } else if (formClick === "addClick") {
       setAddError(error);
     }
 
@@ -77,10 +87,11 @@ function ScreenSearchReco(props) {
     setAddLink("");
   }
 
-  // FONCTION ADD (activated when you click on the heart icon)
+  // FONCTION ADD (activated when you click on the empty heart icon)
   async function addReco(element, index) {
-    console.log("element clicked, in addReco =>", element, index);
-
+    if (formClick === "addClick") {
+      setShowButton(false);
+    }
     // UPDATE DATABASE
     let data = await fetch("/addReco", {
       method: "POST",
@@ -110,33 +121,26 @@ function ScreenSearchReco(props) {
     newList[index].followers = resultsList[index].followers + 1;
     newList[index].id = response.savedReco._id;
     setResultsList([...newList]);
-    console.log("resultsList after modification =>", resultsList);
   }
 
-  // FONCTION ADDOTHER à activer si category = other dans searchReco()
-  async function addOther(addTitle, addLink) {
-    console.log("click addOther");
-
+  // FUNCTION ADDFROMSCRATCH
+  async function addFromScratch(category, title, link) {
     let data = await fetch("/addReco", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body:
-        "tokenFromFront=" +
-        props.token +
-        "&alreadyInDBFromFront=false&categoryFromFront=Other&titleFromFront=" +
-        addTitle +
-        "&imageUrlFromFront=" +
-        addLink +
-        "&APIidFromFront=null",
+      body: `tokenFromFront=${
+        props.token
+      }&categoryFromFront=${category}&alreadyInDBFromFront=${false}&titleFromFront=${title}&imageUrlFromFront=${link}&APIidFromFront=${null}`,
     });
     let response = await data.json();
-    console.log("response from addOther=>", response);
+    console.log("response from addFromScratch =>", response);
   }
 
   // FUNCTION DELETE (activated when you click on the full heart)
   async function deleteReco(element, index) {
-    console.log("element clicked, in deleteReco =>", element, index);
-    console.log("element.id =>", element.id);
+    if (formClick === "addClick") {
+      setShowButton(true);
+    }
 
     //1 UPDATE DATABASE
     let data = await fetch(`/deleteReco/${props.token}/${element.id}`, {
@@ -155,10 +159,9 @@ function ScreenSearchReco(props) {
       newList[index].followers = 0;
     }
     setResultsList([...newList]);
-    console.log("resultsList after modification =>", resultsList);
   }
 
-  // MAP POUR AFFICHER LES PROPOSITIONS
+  // MAP TO DISPLAY PROPOSALS FROM APIS
   if (resultsList.length > 0) {
     var mapResultsList = resultsList.map((element, index) => {
       if (element.alreadyLiked == true) {
@@ -166,7 +169,6 @@ function ScreenSearchReco(props) {
           <AiFillHeart
             style={{ fontSize: "25px" }}
             onClick={() => {
-              console.log("DELETE Click, index", index);
               deleteReco(element, index);
             }}
           />
@@ -176,7 +178,6 @@ function ScreenSearchReco(props) {
           <AiOutlineHeart
             style={{ fontSize: "25px" }}
             onClick={() => {
-              console.log("ADD Click");
               addReco(element, index);
             }}
           />
@@ -197,6 +198,28 @@ function ScreenSearchReco(props) {
         </div>
       );
     });
+  }
+
+  // CONDITION TO DISPLAY ADDFROMSCRATCH BUTTON
+  if (formClick === "addClick") {
+    if (showButton) {
+      button = (
+        <Button
+          className="Button-Shadow"
+          style={{ boxShadow: "10px 10px #ffd2ee" }}
+          onClick={() => {
+            addFromScratch(
+              pendingReco.category,
+              pendingReco.title,
+              pendingReco.link
+            );
+            handleClose();
+          }}
+        >
+          ADD FROM SCRATCH
+        </Button>
+      );
+    }
   }
 
   if (props.token) {
@@ -238,8 +261,8 @@ function ScreenSearchReco(props) {
             <Button
               className="Button-Submit"
               onClick={() => {
-                console.log("SEARCH Click =>", searchCategory, searchTitle);
-                searchReco(searchCategory, searchTitle, null, "searchClick");
+                setFormClick("searchClick");
+                searchReco(searchCategory, searchTitle, null);
               }}
             >
               SEARCH
@@ -277,8 +300,8 @@ function ScreenSearchReco(props) {
             <Button
               className="Button-Submit"
               onClick={() => {
-                console.log("ADD click =>", addCategory, addTitle, addLink);
-                searchReco(addCategory, addTitle, addLink, "addClick");
+                setFormClick("addClick");
+                searchReco(addCategory, addTitle, addLink);
               }}
             >
               ADD TO MY HAPPY LIST
@@ -323,6 +346,7 @@ function ScreenSearchReco(props) {
                 style={{ height: "420px", overflowY: "auto" }}
               >
                 {mapResultsList}
+                {button}
               </Col>
               <Col xs="1" md="3" lg="4"></Col>
             </Row>
