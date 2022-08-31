@@ -8,6 +8,7 @@ import ScreenUser from "./ScreenUser";
 import ScreenSearchReco from "./ScreenSearchReco";
 import ScreenSearchUser from "./ScreenSearchUser";
 import ScreenSignInUp from "./ScreenSignInUp";
+import ScreenSeachUserProfile from "./ScreenSeachUserProfile";
 
 import token from "./reducers/token";
 import user from "./reducers/userInfos";
@@ -27,6 +28,11 @@ function App() {
           <Route exact path="/screenuser" component={ScreenUser} />
           <Route exact path="/screensearchreco" component={ScreenSearchReco} />
           <Route exact path="/screensearchuser" component={ScreenSearchUser} />
+          <Route
+            exact
+            path="/screensearchuserprofile"
+            component={ScreenSeachUserProfile}
+          />
         </Switch>
       </Router>
     </Provider>

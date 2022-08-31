@@ -348,4 +348,10 @@ router.post("/searchPodcast", async function (req, res, next) {
   res.json(podcastsList);
 });
 
+//GET  ALL USER //
+router.get("/getAllUsers", async function (req, res, next) {
+  let users = await userModel.find({});
+  res.json(users);
+});
+
 module.exports = router;

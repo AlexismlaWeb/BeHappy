@@ -259,7 +259,7 @@ function ScreenRandom(props) {
       </Row>
       {recommendationsRandom.category
         ? (Reco = (
-            <Row
+            <div
               style={{
                 backgroundColor: "#FFDBD0",
                 marginTop: "3%",
@@ -308,7 +308,7 @@ function ScreenRandom(props) {
                   </p>
                 </Col>
               </Row>
-            </Row>
+            </div>
           ))
         : null}
       <Row>

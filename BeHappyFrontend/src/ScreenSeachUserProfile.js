@@ -4,12 +4,12 @@ import { connect } from "react-redux";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Container, Col, Row } from "reactstrap";
 import { Button } from "antd";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faXmarkCircle } from "@fortawesome/free-solid-svg-icons";
+import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
+
 import { Redirect } from "react-router-dom/cjs/react-router-dom.min";
 import "./App.css";
 
-function ScreenProfile(props) {
+function ScreenSearchUserProfile(props) {
   const history = useHistory();
 
   const navigateScreenrandom = () => {
@@ -22,10 +22,11 @@ function ScreenProfile(props) {
   useEffect(() => {
     const RecupUserInfo = async () => {
       if (props.token) {
-        const data = await fetch("/getUserInfoByToken/" + props.token);
+        const data = await fetch(
+          "/getUserInfoByToken/" + props.history.location.state.user.token
+        );
         const body = await data.json();
         if (body) {
-          props.addUserInfo(body.user);
           setUserInfo(body.user);
         }
       }
@@ -33,48 +34,67 @@ function ScreenProfile(props) {
     RecupUserInfo();
   }, []);
 
-  async function deleteReco(userToken, idReco) {
-    console.log(idReco);
+  let heart;
 
-    // EDIT IN DATABASE
-    let data = await fetch(`/deleteReco/${userToken}/${idReco}`, {
-      method: "DELETE",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    });
-    let response = await data.json();
+  if (userInfo) {
+    console.log("userInfo ==> ", userInfo);
+    console.log("props.user ==> ", props.user);
 
-    // EDIT TO RE-RENDER THE SCREEN
-    let newList = userInfo.recoList.filter((e) => e._id != idReco);
-    setUserInfo({ ...userInfo, recoList: newList });
+    for (let i = 0; i < userInfo.recoList.length; i++) {
+      //   if (props.user.recoList[i].APIid === userInfo.recoList[i].APIid) {
+      //     console.log("Same ==> " + props.user.recoList[i].title, true);
+      //   } else {
+      //     console.log("Same ==> " + props.user.recoList[i].title, false);
+      //   }
+      console.log(i);
+      if (i <= userInfo.recoList.length) {
+        console.log("props.user.recoList ==> ", props.user.recoList[i].APIid);
+      }
+    }
   }
 
   if (userInfo) {
     var usersListReco = userInfo.recoList.map((reco, i) => {
+      if (reco.alreadyLiked == true) {
+        heart = (
+          <AiFillHeart
+            style={{ fontSize: "25px" }}
+            onClick={() => {
+              console.log("DELETE Click, index", i);
+              //   deleteReco(reco, i);
+            }}
+          />
+        );
+      } else if (reco.alreadyLiked == false) {
+        heart = (
+          <AiOutlineHeart
+            style={{ fontSize: "25px" }}
+            onClick={() => {
+              console.log("ADD Click");
+              //   addReco(reco, i);
+            }}
+          />
+        );
+      }
       return (
         <div className="List" key={i}>
           <div className="List">
             <img src={reco.imageUrl} className="Reco-Image" alt="recoIMG" />
             <div className="Reco-Infos">
-              <p className="Reco">{reco.category}</p>
               <p className="Reco">{reco.title}</p>
-              <p className="Reco">Likes</p>
             </div>
           </div>
-          <FontAwesomeIcon
-            icon={faXmarkCircle}
-            className="Right-Icon"
-            onClick={() => {
-              console.log("userID " + props.user.token + " => " + reco.APIid);
-              deleteReco(props.token, reco._id);
-            }}
-          />
+          <div className="Reco-Likes">
+            {heart}
+            <p className="Reco">{reco.followers}</p>
+          </div>
         </div>
       );
     });
   } else {
     usersListReco = "No Recommendation";
   }
-  if (props.token) {
+  if (props.history.location.state.user.token) {
     return (
       <Container fluid>
         <Row>
@@ -90,7 +110,7 @@ function ScreenProfile(props) {
               className="Button-Shadow"
               style={{ boxShadow: "5px 5px #D7E8DA", height: "20px" }}
             >
-              EDIT MY PROFILE
+              FOLLOW
             </Button>
           </Col>
           <Col xs="1" md="3" lg="4"></Col>
@@ -127,31 +147,7 @@ function ScreenProfile(props) {
           </Col>
           <Col xs="1" md="3" lg="4"></Col>
         </Row>
-        <Row>
-          <Col xs="1" md="3" lg="4"></Col>
-          <Col xs="10" md="6" lg="4" className="Bottom">
-            <Button
-              className="Button-Shadow"
-              style={{ boxShadow: "10px 10px #D7E8DA" }}
-              onClick={() => {
-                history.push("/screensearchreco");
-              }}
-            >
-              UPDATE MY LIST
-            </Button>
-            <Button
-              danger
-              className="Button-Shadow"
-              style={{ boxShadow: "10px 10px #D7E8DA" }}
-              onClick={() => {
-                navigateScreenrandom();
-              }}
-            >
-              SURPRISE ME
-            </Button>
-          </Col>
-          <Col xs="1" md="3" lg="4" className="col3"></Col>
-        </Row>
+
         <Row>
           <Col xs="1" md="3" lg="4"></Col>
           <Col xs="10" md="6" lg="4" className="Bottom">
@@ -164,11 +160,10 @@ function ScreenProfile(props) {
               }}
               className="Button-Shadow"
               onClick={() => {
-                props.addToken();
-                history.push("/screenrandom");
+                history.push("/screenprofile");
               }}
             >
-              LOG-OUT
+              MY PROFILE
             </Button>
           </Col>
           <Col xs="1" md="3" lg="4" className="col3"></Col>
@@ -195,4 +190,7 @@ function mapStateToProps(state) {
   return { token: state.token, user: state.user };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ScreenProfile);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ScreenSearchUserProfile);

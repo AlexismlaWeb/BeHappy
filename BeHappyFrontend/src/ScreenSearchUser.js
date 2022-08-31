@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
-import { useParams } from "react-router-dom";
 import { connect } from "react-redux";
-import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Container, Col, Row } from "reactstrap";
 import { Button } from "antd";
@@ -16,6 +14,41 @@ import HeaderComposant from "./HeaderComposant";
 
 function ScreenSearchUser(props) {
   const history = useHistory();
+  const [allUsers, setAllUsers] = useState([]);
+  const [search, setSearch] = useState();
+
+  useEffect(() => {
+    const getAllUsers = async () => {
+      const data = await fetch("/getAllUsers");
+      const body = await data.json();
+      setAllUsers(body);
+    };
+    getAllUsers();
+  }, []);
+
+  console.log("allUser ==> ", allUsers);
+  console.log("search ==> ", search);
+
+  if (search) {
+    var usersList = search.map((user, i) => {
+      return (
+        <div className="List">
+          <div className="List">
+            <img src="../AvatarTest.png" className="User-Avatar" />
+            <p className="User-Pseudo">@{user.username}</p>
+          </div>
+          <FontAwesomeIcon
+            icon={faChevronCircleRight}
+            className="Right-Icon"
+            onClick={() => {
+              console.log("user.username ==> ", user);
+              history.push(`/screensearchuserprofile/`, { user });
+            }}
+          />
+        </div>
+      );
+    });
+  }
 
   if (props.token) {
     return (
@@ -41,117 +74,15 @@ function ScreenSearchUser(props) {
               type="title"
               name="title"
               placeholder="Search via pseudo"
+              onChange={(e) => {
+                setSearch(
+                  allUsers.filter((user) =>
+                    user.username.includes(e.target.value)
+                  )
+                );
+              }}
             />
-            <div className="List">
-              <div className="List">
-                <img src="../AvatarTest.png" className="User-Avatar" />
-                <p className="User-Pseudo">@JoeyPasta</p>
-              </div>
-              <FontAwesomeIcon
-                icon={faChevronCircleRight}
-                className="Right-Icon"
-              />
-            </div>
-            <div className="List">
-              <div className="List">
-                <img src="../AvatarTest.png" className="User-Avatar" />
-                <p className="User-Pseudo">@JoeyPasta</p>
-              </div>
-              <FontAwesomeIcon
-                icon={faChevronCircleRight}
-                className="Right-Icon"
-              />
-            </div>
-            <div className="List">
-              <div className="List">
-                <img src="../AvatarTest.png" className="User-Avatar" />
-                <p className="User-Pseudo">@JoeyPasta</p>
-              </div>
-              <FontAwesomeIcon
-                icon={faChevronCircleRight}
-                className="Right-Icon"
-              />
-            </div>
-            <div className="List">
-              <div className="List">
-                <img src="../AvatarTest.png" className="User-Avatar" />
-                <p className="User-Pseudo">@JoeyPasta</p>
-              </div>
-              <FontAwesomeIcon
-                icon={faChevronCircleRight}
-                className="Right-Icon"
-              />
-            </div>
-            <div className="List">
-              <div className="List">
-                <img src="../AvatarTest.png" className="User-Avatar" />
-                <p className="User-Pseudo">@JoeyPasta</p>
-              </div>
-              <FontAwesomeIcon
-                icon={faChevronCircleRight}
-                className="Right-Icon"
-              />
-            </div>
-            <div className="List">
-              <div className="List">
-                <img src="../AvatarTest.png" className="User-Avatar" />
-                <p className="User-Pseudo">@JoeyPasta</p>
-              </div>
-              <FontAwesomeIcon
-                icon={faChevronCircleRight}
-                className="Right-Icon"
-              />
-            </div>
-            <div className="List">
-              <div className="List">
-                <img src="../AvatarTest.png" className="User-Avatar" />
-                <p className="User-Pseudo">@JoeyPasta</p>
-              </div>
-              <FontAwesomeIcon
-                icon={faChevronCircleRight}
-                className="Right-Icon"
-              />
-            </div>
-            <div className="List">
-              <div className="List">
-                <img src="../AvatarTest.png" className="User-Avatar" />
-                <p className="User-Pseudo">@JoeyPasta</p>
-              </div>
-              <FontAwesomeIcon
-                icon={faChevronCircleRight}
-                className="Right-Icon"
-              />
-            </div>
-            <div className="List">
-              <div className="List">
-                <img src="../AvatarTest.png" className="User-Avatar" />
-                <p className="User-Pseudo">@JoeyPasta</p>
-              </div>
-              <FontAwesomeIcon
-                icon={faChevronCircleRight}
-                className="Right-Icon"
-              />
-            </div>
-            <div className="List">
-              <div className="List">
-                <img src="../AvatarTest.png" className="User-Avatar" />
-                <p className="User-Pseudo">@JoeyPasta</p>
-              </div>
-              <FontAwesomeIcon
-                icon={faChevronCircleRight}
-                className="Right-Icon"
-              />
-            </div>
-            <div className="List">
-              <div className="List">
-                <img src="../AvatarTest.png" className="User-Avatar" />
-                <p className="User-Pseudo">@JoeyPasta</p>
-              </div>
-              <FontAwesomeIcon
-                icon={faChevronCircleRight}
-                className="Right-Icon"
-              />
-            </div>
+            {search ? usersList : null}
           </Col>
           <Col xs="1" md="3" lg="4"></Col>
         </Row>
