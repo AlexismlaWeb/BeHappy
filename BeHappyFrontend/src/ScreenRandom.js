@@ -2,7 +2,7 @@ import "./App.css";
 import React, { useState, useEffect } from "react";
 import Modal from "react-bootstrap/Modal";
 
-import { Container, Col, Row, Input, Label } from "reactstrap";
+import { Container, Col, Row, Input, Label, NavItem } from "reactstrap";
 import { Button } from "antd";
 import { connect } from "react-redux";
 
@@ -26,15 +26,7 @@ function ScreenRandom(props) {
   const handleShow = () => setShow(true);
   var heart;
 
-  useEffect(() => {
-    const getAllRecommendations = async () => {
-      const data = await fetch("/getAllRecommendations");
-      const body = await data.json();
-      setAllRecommendations(body);
-    };
-    getAllRecommendations();
-  }, []);
-
+  // IF CONNECTED? CHANGE THE LINK FROM "SIGN IN" TO "MY ACCOUNT"
   useEffect(() => {
     const ConnectedorNot = () => {
       if (props.token) {
@@ -44,31 +36,45 @@ function ScreenRandom(props) {
     ConnectedorNot();
   }, [signText]);
 
+  // ON INITIALISATION, GET ALL RECO FROM DATABASE
+  useEffect(() => {
+    const getAllRecommendations = async () => {
+      const data = await fetch("/getAllRecommendations");
+      const body = await data.json();
+      setAllRecommendations(body);
+    };
+    getAllRecommendations();
+  }, []);
+
+  // GET ONE RANDOM RECOMMENDATION
+  const RecommendationRandom = () => {
+    const randomRecommendation =
+      Recommendations[Math.floor(Math.random() * Recommendations.length)];
+    setRecommendationsRandom(randomRecommendation);
+  };
+
+  // CHECK WETHER THE RECO IS ALREADY LIKED
   var bool = false;
   if (props.token) {
-    var recommendations = [props.user];
-
-    for (const item of recommendations) {
-      if (item.recoList) {
-        for (const item2 of item.recoList) {
-          if (item2.APIid === recommendationsRandom.APIid) {
-            console.log(
-              "good => " + item2.title + " === " + recommendationsRandom.title
-            );
-            bool = true;
-          }
-        }
+    var recommendations = props.user.recoList;
+    for (let item of recommendations) {
+      if (item._id === recommendationsRandom._id) {
+        bool = true;
+        console.log("YES, alreadyLiked");
+      } else {
+        console.log("NO, not liked yet");
       }
     }
   }
 
+  // DISPLAY EMPTY/FULL HEART IF ALREADY LIKED
   if (props.token) {
     if (bool) {
       heart = (
         <AiFillHeart
           style={{ fontSize: "30px" }}
           onClick={() => {
-            console.log("liked =>", bool);
+            console.log("to delete");
           }}
         />
       );
@@ -77,7 +83,7 @@ function ScreenRandom(props) {
         <AiOutlineHeart
           style={{ fontSize: "30px" }}
           onClick={() => {
-            console.log("liked =>", bool);
+            console.log("to like");
           }}
         />
       );
@@ -94,7 +100,6 @@ function ScreenRandom(props) {
   }
 
   //RECOMMENDATION FILTER
-
   const RecommendationsFilter = () => {
     const filteredRecommendations = allRecommendations.filter(
       (recommendation) => {
@@ -109,13 +114,6 @@ function ScreenRandom(props) {
   };
 
   const Recommendations = RecommendationsFilter();
-
-  // RECOMMENDATION RANDOM
-  const RecommendationRandom = () => {
-    const randomRecommendation =
-      Recommendations[Math.floor(Math.random() * Recommendations.length)];
-    setRecommendationsRandom(randomRecommendation);
-  };
 
   var Reco;
 
