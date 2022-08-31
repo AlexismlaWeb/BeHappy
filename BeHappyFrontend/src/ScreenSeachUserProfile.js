@@ -22,56 +22,96 @@ function ScreenSearchUserProfile(props) {
   useEffect(() => {
     const RecupUserInfo = async () => {
       if (props.token) {
+        // RECUP INFOS DE L'INFLUENCEUR
         const data = await fetch(
           "/getUserInfoByToken/" + props.history.location.state.user.token
         );
         const body = await data.json();
-        if (body) {
+
+        // RECUP INFOS DU USER CONNECTE
+        console.log("props.token", props.token);
+        const data2 = await fetch("/getUserInfoByToken/" + props.token);
+        const body2 = await data2.json();
+        console.log("body2,", body2);
+
+        if (body && body2) {
+          for (let userReco of body2.user.recoList) {
+            for (let influenceurReco of body.user.recoList) {
+              if (userReco._id === influenceurReco._id) {
+                influenceurReco.alreadyLiked = true;
+              } else {
+                influenceurReco.alreadyLiked = false;
+              }
+            }
+          }
           setUserInfo(body.user);
         }
       }
     };
     RecupUserInfo();
   }, []);
-
   let heart;
 
-  if (userInfo) {
-    console.log("userInfo ==> ", userInfo);
-    console.log("props.user ==> ", props.user);
+  // FONCTION ADD (activated when you click on the empty heart icon)
+  async function addReco(element, index) {
+    // UPDATE DATABASE
+    console.log("element", element);
+    let data = await fetch("/addReco", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body:
+        "tokenFromFront=" +
+        props.token +
+        "&alreadyInDBFromFront=true" +
+        "&categoryFromFront=" +
+        element.category +
+        "&titleFromFront=" +
+        element.title +
+        "&imageUrlFromFront=" +
+        element.imageUrl +
+        "&APIidFromFront=" +
+        element.APIid +
+        "&recoIdFromFront=" +
+        element._id,
+    });
+    let response = await data.json();
+    console.log("response", response);
+    let newList = userInfo;
+    newList.recoList[index].alreadyLiked = true;
+    setUserInfo({ ...newList });
+  }
 
-    for (let i = 0; i < userInfo.recoList.length; i++) {
-      //   if (props.user.recoList[i].APIid === userInfo.recoList[i].APIid) {
-      //     console.log("Same ==> " + props.user.recoList[i].title, true);
-      //   } else {
-      //     console.log("Same ==> " + props.user.recoList[i].title, false);
-      //   }
-      console.log(i);
-      if (i <= userInfo.recoList.length) {
-        console.log("props.user.recoList ==> ", props.user.recoList[i].APIid);
-      }
-    }
+  async function deleteReco(element, index) {
+    //1 UPDATE DATABASE
+    let data = await fetch(`/deleteReco/${props.token}/${element._id}`, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    });
+    let response = await data.json();
+
+    //2 UPDATE RESULTSLIST FOR THE FRONT END
+    let newList = userInfo;
+    newList.recoList[index].alreadyLiked = false;
+    setUserInfo({ ...newList });
   }
 
   if (userInfo) {
     var usersListReco = userInfo.recoList.map((reco, i) => {
-      if (reco.alreadyLiked == true) {
+      if (reco.alreadyLiked === true) {
         heart = (
           <AiFillHeart
             style={{ fontSize: "25px" }}
             onClick={() => {
-              console.log("DELETE Click, index", i);
-              //   deleteReco(reco, i);
+              deleteReco(reco, i);
             }}
           />
         );
-      } else if (reco.alreadyLiked == false) {
+      } else if (reco.alreadyLiked === false) {
         heart = (
           <AiOutlineHeart
             style={{ fontSize: "25px" }}
             onClick={() => {
-              console.log("ADD Click");
-              //   addReco(reco, i);
+              addReco(reco, i);
             }}
           />
         );

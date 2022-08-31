@@ -34,8 +34,6 @@ function ScreenProfile(props) {
   }, []);
 
   async function deleteReco(userToken, idReco) {
-    console.log(idReco);
-
     // EDIT IN DATABASE
     let data = await fetch(`/deleteReco/${userToken}/${idReco}`, {
       method: "DELETE",
@@ -64,7 +62,6 @@ function ScreenProfile(props) {
             icon={faXmarkCircle}
             className="Right-Icon"
             onClick={() => {
-              console.log("userID " + props.user.token + " => " + reco.APIid);
               deleteReco(props.token, reco._id);
             }}
           />
