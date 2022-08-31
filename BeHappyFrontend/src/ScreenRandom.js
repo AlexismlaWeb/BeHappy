@@ -52,9 +52,6 @@ function ScreenRandom(props) {
       if (item.recoList) {
         for (const item2 of item.recoList) {
           if (item2.APIid === recommendationsRandom.APIid) {
-            console.log(
-              "good => " + item2.title + " === " + recommendationsRandom.title
-            );
             bool = true;
           }
         }

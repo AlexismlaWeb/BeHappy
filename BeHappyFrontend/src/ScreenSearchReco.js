@@ -58,7 +58,6 @@ function ScreenSearchReco(props) {
       });
 
       let response = await data.json();
-      console.log("response from searchReco =>", response);
       if (response.length === 0 && formClick === "addClick") {
         addFromScratch(category, title, link);
       } else if (response.length === 0 && formClick === "searchClick") {
@@ -92,6 +91,7 @@ function ScreenSearchReco(props) {
     if (formClick === "addClick") {
       setShowButton(false);
     }
+
     // UPDATE DATABASE
     let data = await fetch("/addReco", {
       method: "POST",
@@ -133,7 +133,6 @@ function ScreenSearchReco(props) {
       }&categoryFromFront=${category}&alreadyInDBFromFront=${false}&titleFromFront=${title}&imageUrlFromFront=${link}&APIidFromFront=${null}`,
     });
     let response = await data.json();
-    console.log("response from addFromScratch =>", response);
   }
 
   // FUNCTION DELETE (activated when you click on the full heart)

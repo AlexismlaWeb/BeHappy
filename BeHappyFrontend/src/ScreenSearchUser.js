@@ -26,9 +26,6 @@ function ScreenSearchUser(props) {
     getAllUsers();
   }, []);
 
-  console.log("allUser ==> ", allUsers);
-  console.log("search ==> ", search);
-
   if (search) {
     var usersList = search.map((user, i) => {
       return (
@@ -41,7 +38,6 @@ function ScreenSearchUser(props) {
             icon={faChevronCircleRight}
             className="Right-Icon"
             onClick={() => {
-              console.log("user.username ==> ", user);
               history.push(`/screensearchuserprofile/`, { user });
             }}
           />
