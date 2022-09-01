@@ -7,7 +7,7 @@ import { Button } from "antd";
 import { connect } from "react-redux";
 
 import "bootstrap/dist/css/bootstrap.min.css";
-import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
+import { AiOutlineHeart, AiFillHeart, AiTwotonePicture } from "react-icons/ai";
 import { useHistory } from "react-router-dom";
 import ScreenSignInUp from "./ScreenSignInUp";
 import HeaderComposant from "./HeaderComposant";
@@ -20,24 +20,16 @@ function ScreenRandom(props) {
   const [liked, setLiked] = useState(false);
   const [filtre, setFiltre] = useState("All");
   const [allRecommendations, setAllRecommendations] = useState([]);
-  const [recommendationsRandom, setRecommendationsRandom] = useState({});
+  const [randomReco, setRandomReco] = useState({});
+  const [userReco, setUserReco] = useState([]);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-  var heart;
+  let heart;
 
-  // IF CONNECTED? CHANGE THE LINK FROM "SIGN IN" TO "MY ACCOUNT"
+  // ON INITIALISATION
   useEffect(() => {
-    const ConnectedorNot = () => {
-      if (props.token) {
-        setSignText("MY ACCOUNT");
-      }
-    };
-    ConnectedorNot();
-  }, [signText]);
-
-  // ON INITIALISATION, GET ALL RECO FROM DATABASE
-  useEffect(() => {
+    // GET ALL RECO FROM DATABASE
     const getAllRecommendations = async () => {
       const data = await fetch("/getAllRecommendations");
       const body = await data.json();
@@ -46,44 +38,122 @@ function ScreenRandom(props) {
     getAllRecommendations();
   }, []);
 
-  // GET ONE RANDOM RECOMMENDATION
-  const RecommendationRandom = () => {
-    const randomRecommendation =
-      Recommendations[Math.floor(Math.random() * Recommendations.length)];
-    setRecommendationsRandom(randomRecommendation);
+  // IF CONNECTED...
+  useEffect(() => {
+    const getUserInfo = async () => {
+      // CHANGE THE LINK TO "MY ACCOUNT"
+      if (props.token) {
+        setSignText("MY ACCOUNT");
+
+        // GET USER INFO FROM DATABASE
+        const data = await fetch("/getUserInfoByToken/" + props.token);
+        const body = await data.json();
+
+        // CREATE USER LIST OF RECO IDS
+        let userList = [];
+        for (let element of body.user.recoList) {
+          userList.push(element._id);
+        }
+        setUserReco([...userList]);
+      }
+    };
+    getUserInfo();
+  }, []);
+
+  //RECOMMENDATION FILTER
+  const RecommendationsFilter = () => {
+    const filteredRecommendations = allRecommendations.filter(
+      (recommendation) => {
+        if (filtre === "All") {
+          console.log("filtre = All");
+          return recommendation;
+        } else {
+          console.log("filtre =", filtre);
+          return recommendation.category.includes(filtre);
+        }
+      }
+    );
+    return filteredRecommendations;
   };
 
-  // CHECK WETHER THE RECO IS ALREADY LIKED
-  var bool = false;
-  if (props.token) {
-    var recommendations = props.user.recoList;
-    for (let item of recommendations) {
-      if (item._id === recommendationsRandom._id) {
-        bool = true;
-        console.log("YES, alreadyLiked");
-      } else {
-        console.log("NO, not liked yet");
-      }
+  const filteredList = RecommendationsFilter();
+  console.log("filteredList =>", filteredList);
+
+  // GET ONE RANDOM RECOMMENDATION
+  const getRandomReco = () => {
+    const randomRecommendation =
+      filteredList[Math.floor(Math.random() * filteredList.length)];
+    setRandomReco(randomRecommendation);
+  };
+
+  // FONCTION ADDRECO (ACTIVATED WHEN YOU CLICK ON THE EMPTY HEART)
+  async function addReco(randomReco) {
+    console.log("click ADD");
+    // 1 UPDATE DATABASE
+    let data = await fetch("/addReco", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body:
+        "tokenFromFront=" +
+        props.token +
+        "&alreadyInDBFromFront=true" +
+        "&categoryFromFront=" +
+        randomReco.category +
+        "&titleFromFront=" +
+        randomReco.title +
+        "&imageUrlFromFront=" +
+        randomReco.imageUrl +
+        "&APIidFromFront=" +
+        randomReco.APIid +
+        "&recoIdFromFront=" +
+        randomReco._id,
+    });
+    let response = await data.json();
+
+    //2 UPDATE THE FRONT
+
+    if (response) {
+      let newList = userReco;
+      newList.push(randomReco._id);
+      setUserReco([...newList]);
+    }
+  }
+
+  // FUNCTION DELETERECO (ACTIVATED WHEN YOU CLICK ON A FULL HEART)
+  async function deleteReco(randomReco) {
+    console.log("click DELETE");
+    //1 UPDATE DATABASE
+    let data = await fetch(`/deleteReco/${props.token}/${randomReco._id}`, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    });
+    let response = await data.json();
+
+    //2 UPDATE THE FRONT END
+    if (response) {
+      let newList = userReco;
+      newList = userReco.filter((e) => e !== randomReco._id);
+      setUserReco([...newList]);
     }
   }
 
   // DISPLAY EMPTY/FULL HEART IF ALREADY LIKED
   if (props.token) {
-    if (bool) {
+    if (userReco.includes(randomReco._id)) {
       heart = (
         <AiFillHeart
           style={{ fontSize: "30px" }}
           onClick={() => {
-            console.log("to delete");
+            deleteReco(randomReco);
           }}
         />
       );
-    } else {
+    } else if (!userReco.includes(randomReco._id)) {
       heart = (
         <AiOutlineHeart
           style={{ fontSize: "30px" }}
           onClick={() => {
-            console.log("to like");
+            addReco(randomReco);
           }}
         />
       );
@@ -99,24 +169,7 @@ function ScreenRandom(props) {
     );
   }
 
-  //RECOMMENDATION FILTER
-  const RecommendationsFilter = () => {
-    const filteredRecommendations = allRecommendations.filter(
-      (recommendation) => {
-        if (filtre === "All") {
-          return recommendation;
-        } else {
-          return recommendation.category.includes(filtre);
-        }
-      }
-    );
-    return filteredRecommendations;
-  };
-
-  const Recommendations = RecommendationsFilter();
-
   var Reco;
-
   return (
     <Container fluid>
       <HeaderComposant />
@@ -255,7 +308,7 @@ function ScreenRandom(props) {
           </Button>
         </Col>
       </Row>
-      {recommendationsRandom.category
+      {randomReco.category
         ? (Reco = (
             <div
               style={{
@@ -267,7 +320,7 @@ function ScreenRandom(props) {
             >
               <Row style={{ marginBottom: "3%" }}>
                 <Col xs={12} md={6} lg={12}>
-                  <h3 className="Title">{recommendationsRandom.title}</h3>
+                  <h3 className="Title">{randomReco.title}</h3>
                 </Col>
               </Row>
               <Row>
@@ -278,8 +331,8 @@ function ScreenRandom(props) {
                   className="d-flex justify-content-center align-items-center"
                 >
                   <img
-                    src={recommendationsRandom.imageUrl}
-                    alt={recommendationsRandom.title}
+                    src={randomReco.imageUrl}
+                    alt={randomReco.title}
                     className="Img"
                   />
                 </Col>
@@ -326,7 +379,7 @@ function ScreenRandom(props) {
               fontSize: "20px",
             }}
             onClick={() => {
-              RecommendationRandom();
+              getRandomReco();
             }}
           >
             SURPRISE ME!
