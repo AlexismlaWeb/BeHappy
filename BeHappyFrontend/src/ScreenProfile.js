@@ -25,6 +25,11 @@ function ScreenProfile(props) {
         const data = await fetch("/getUserInfoByToken/" + props.token);
         const body = await data.json();
         if (body) {
+          for (let i = 0; i < body.user.recoList.length; i++) {
+            if (body.user.recoList[i].imageUrl.includes("null")) {
+              body.user.recoList[i].imageUrl = "../alexisphoto.jpg";
+            }
+          }
           props.addUserInfo(body.user);
           setUserInfo(body.user);
         }
@@ -32,6 +37,8 @@ function ScreenProfile(props) {
     };
     RecupUserInfo();
   }, []);
+
+  console.log("userInfo", userInfo);
 
   async function deleteReco(userToken, idReco) {
     // EDIT IN DATABASE
