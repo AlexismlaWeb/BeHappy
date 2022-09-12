@@ -41,6 +41,7 @@ function ScreenRandom(props) {
   // IF CONNECTED...
   useEffect(() => {
     const getUserInfo = async () => {
+      console.log(props.token);
       // CHANGE THE LINK TO "MY ACCOUNT"
       if (props.token) {
         setSignText("MY ACCOUNT");
