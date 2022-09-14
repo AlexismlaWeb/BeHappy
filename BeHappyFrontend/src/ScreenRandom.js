@@ -33,6 +33,23 @@ function ScreenRandom(props) {
     const getAllRecommendations = async () => {
       const data = await fetch("/getAllRecommendations");
       const body = await data.json();
+      if (body) {
+        for (let i = 0; i < body.length; i++) {
+          if (
+            (body[i].imageUrl.includes("null") &&
+              body[i].category === "Movie") ||
+            body[i].category === "Film"
+          ) {
+            body[i].imageUrl = "../movie.jpg";
+          } else if (
+            body[i].imageUrl.includes("null") &&
+            body[i].category === "Serie"
+          ) {
+            body[i].imageUrl = "../series.png";
+          }
+        }
+      }
+      console.log("body", body);
       setAllRecommendations(body);
     };
     getAllRecommendations();
@@ -189,17 +206,6 @@ function ScreenRandom(props) {
         <Col xs={3} md="6" lg="4">
           <Input
             type="radio"
-            value="Music"
-            name="type"
-            onChange={(e) => {
-              setFiltre(e.target.value);
-            }}
-          />
-          <Label style={{ fontSize: "10px" }}>MUSIC</Label>
-        </Col>
-        <Col xs={3} md="6" lg="4">
-          <Input
-            type="radio"
             value="Movie"
             name="type"
             onChange={(e) => {
@@ -309,60 +315,68 @@ function ScreenRandom(props) {
           </Button>
         </Col>
       </Row>
-      {randomReco.category
-        ? (Reco = (
-            <div
-              style={{
-                backgroundColor: "#FFDBD0",
-                marginTop: "3%",
-                paddingTop: "3%",
-                paddingBottom: "3%",
-              }}
-            >
-              <Row style={{ marginBottom: "3%" }}>
-                <Col xs={12} md={6} lg={12}>
-                  <h3 className="Title">{randomReco.title}</h3>
-                </Col>
-              </Row>
-              <Row>
-                <Col
-                  xs={12}
-                  md={6}
-                  lg={12}
-                  className="d-flex justify-content-center align-items-center"
+      {randomReco ? (
+        (Reco = (
+          <div
+            style={{
+              backgroundColor: "#FFDBD0",
+              marginTop: "3%",
+              paddingTop: "3%",
+              paddingBottom: "3%",
+            }}
+          >
+            <Row style={{ marginBottom: "3%" }}>
+              <Col xs={12} md={6} lg={12}>
+                <h3 className="Title">{randomReco.title}</h3>
+              </Col>
+            </Row>
+            <Row>
+              <Col
+                xs={12}
+                md={6}
+                lg={12}
+                className="d-flex justify-content-center align-items-center"
+              >
+                <img
+                  src={randomReco.imageUrl}
+                  alt={randomReco.title}
+                  className="Img"
+                />
+              </Col>
+            </Row>
+            <Row style={{ marginTop: "10%" }}>
+              <Col xs={2} md={6} lg={12}></Col>
+              <Col
+                xs={2}
+                md={6}
+                lg={8}
+                className=" d-flex justify-content-center"
+              >
+                {heart}
+              </Col>
+              <Col xs={7} md={6} lg={4} style={{ textAlign: "left" }}>
+                <p
+                  style={{
+                    fontFamily: "Fredoka One ",
+                    fontSize: "10px",
+                    fontWeight: "bold",
+                  }}
                 >
-                  <img
-                    src={randomReco.imageUrl}
-                    alt={randomReco.title}
-                    className="Img"
-                  />
-                </Col>
-              </Row>
-              <Row style={{ marginTop: "10%" }}>
-                <Col xs={2} md={6} lg={12}></Col>
-                <Col
-                  xs={2}
-                  md={6}
-                  lg={8}
-                  className=" d-flex justify-content-center"
-                >
-                  {heart}
-                </Col>
-                <Col xs={7} md={6} lg={4} style={{ textAlign: "left" }}>
-                  <p
-                    style={{
-                      fontFamily: "Fredoka One ",
-                      fontSize: "10px",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    IT MAKES ME HAPPY! ADD IT TO MY RECOMMENDATIONS
-                  </p>
-                </Col>
-              </Row>
-            </div>
-          ))
-        : null}
+                  IT MAKES ME HAPPY! ADD IT TO MY RECOMMENDATIONS
+                </p>
+              </Col>
+            </Row>
+          </div>
+        ))
+      ) : (
+        <div>
+          <Row style={{ marginBottom: "3%" }}>
+            <Col xs={12} md={6} lg={12}>
+              <h3 className="Title">OUPS NOTHING IN THIS CATEGORY...</h3>
+            </Col>
+          </Row>
+        </div>
+      )}
       <Row>
         <Col
           xs="10"

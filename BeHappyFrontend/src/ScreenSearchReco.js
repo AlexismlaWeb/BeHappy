@@ -12,7 +12,6 @@ import { Input } from "reactstrap";
 import HeaderComposant from "./HeaderComposant";
 import { Redirect } from "react-router-dom/cjs/react-router-dom.min";
 import Modal from "react-bootstrap/Modal";
-import { trusted } from "mongoose";
 
 function ScreenSearchReco(props) {
   const history = useHistory();
@@ -160,9 +159,19 @@ function ScreenSearchReco(props) {
     setResultsList([...newList]);
   }
 
+  console.log("resultsList", resultsList);
+
   // MAP TO DISPLAY PROPOSALS FROM APIS
   if (resultsList.length > 0) {
     var mapResultsList = resultsList.map((element, index) => {
+      if (element.imageUrl.includes("null") && element.category === "Movie") {
+        element.imageUrl = "../movie.jpg";
+      } else if (
+        element.imageUrl.includes("null") &&
+        element.category === "Serie"
+      ) {
+        element.imageUrl = "../series.png";
+      }
       if (element.alreadyLiked == true) {
         heart = (
           <AiFillHeart
@@ -280,7 +289,6 @@ function ScreenSearchReco(props) {
               <option value="Film">Film</option>
               <option value="Serie">Serie</option>
               <option value="Book">Book</option>
-              <option value="Music">Music</option>
               <option value="Podcast">Podcast</option>
               <option value="Other">Other</option>
             </Input>
@@ -290,12 +298,12 @@ function ScreenSearchReco(props) {
               onChange={(e) => setAddTitle(e.target.value)}
               value={addTitle}
             />
-            <Input
+            {/* <Input
               className="Input"
               placeholder="Link"
               onChange={(e) => setAddLink(e.target.value)}
               value={addLink}
-            />
+            /> */}
             <Button
               className="Button-Submit"
               onClick={() => {
