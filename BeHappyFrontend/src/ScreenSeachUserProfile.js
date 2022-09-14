@@ -8,6 +8,7 @@ import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 
 import { Redirect } from "react-router-dom/cjs/react-router-dom.min";
 import "./App.css";
+import { faListSquares } from "@fortawesome/free-solid-svg-icons";
 
 function ScreenSearchUserProfile(props) {
   const history = useHistory();
@@ -18,6 +19,11 @@ function ScreenSearchUserProfile(props) {
   };
 
   const [userInfo, setUserInfo] = useState();
+  const [alreadyFollowed, setAlreadyFollowed] = useState();
+  const [followersCount, setFollowersCount] = useState();
+  const [followedCount, setFollowedCount] = useState();
+
+  let followButton;
 
   useEffect(() => {
     const RecupUserInfo = async () => {
@@ -29,12 +35,11 @@ function ScreenSearchUserProfile(props) {
         const body = await data.json();
 
         // RECUP INFOS DU USER CONNECTE
-        console.log("props.token", props.token);
         const data2 = await fetch("/getUserInfoByToken/" + props.token);
         const body2 = await data2.json();
-        console.log("body2,", body2);
 
         if (body && body2) {
+          //RECO ALREADY LIKED?
           for (let userReco of body2.user.recoList) {
             for (let influenceurReco of body.user.recoList) {
               if (userReco._id === influenceurReco._id) {
@@ -45,17 +50,57 @@ function ScreenSearchUserProfile(props) {
             }
           }
           setUserInfo(body.user);
+
+          //INFLUENCER ALREADY FOLLOWED?
+          if (body.user.followers.includes(body2.user._id)) {
+            setAlreadyFollowed(true);
+          } else {
+            setAlreadyFollowed(false);
+          }
+
+          setFollowersCount(body.user.followers.length);
+          setFollowedCount(body.user.followed.length);
         }
       }
     };
     RecupUserInfo();
   }, []);
+
+  if (alreadyFollowed) {
+    followButton = (
+      <Button
+        className="Button-Shadow"
+        style={{
+          boxShadow: "5px 5px #D7E8DA",
+          height: "20px",
+          color: "#D7E8DA",
+        }}
+        onClick={() => {
+          unfollow(userInfo._id);
+        }}
+      >
+        FOLLOWED
+      </Button>
+    );
+  } else {
+    followButton = (
+      <Button
+        className="Button-Shadow"
+        style={{ boxShadow: "5px 5px #D7E8DA", height: "20px" }}
+        onClick={() => {
+          follow(userInfo._id);
+        }}
+      >
+        FOLLOW
+      </Button>
+    );
+  }
+
   let heart;
 
   // FONCTION ADD (activated when you click on the empty heart icon)
   async function addReco(element, index) {
     // UPDATE DATABASE
-    console.log("element", element);
     let data = await fetch("/addReco", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -75,7 +120,6 @@ function ScreenSearchUserProfile(props) {
         element._id,
     });
     let response = await data.json();
-    console.log("response", response);
     let newList = userInfo;
     newList.recoList[index].alreadyLiked = true;
     setUserInfo({ ...newList });
@@ -93,6 +137,40 @@ function ScreenSearchUserProfile(props) {
     let newList = userInfo;
     newList.recoList[index].alreadyLiked = false;
     setUserInfo({ ...newList });
+  }
+
+  async function follow(influencerId) {
+    let data = await fetch("/follow", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body:
+        "tokenFromFront=" +
+        props.token +
+        "&influencerIdFromFront=" +
+        influencerId,
+    });
+    let response = await data.json();
+    if (response.result == true) {
+      setAlreadyFollowed(true);
+      setFollowersCount(response.savedInfluencer.followers.length);
+    }
+  }
+
+  async function unfollow(influencerId) {
+    let data = await fetch("/unfollow", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body:
+        "tokenFromFront=" +
+        props.token +
+        "&influencerIdFromFront=" +
+        influencerId,
+    });
+    let response = await data.json();
+    if (response.result == true) {
+      setAlreadyFollowed(false);
+      setFollowersCount(response.savedInfluencer.followers.length);
+    }
   }
 
   if (userInfo) {
@@ -146,12 +224,7 @@ function ScreenSearchUserProfile(props) {
               alt="profileIMG"
             />
 
-            <Button
-              className="Button-Shadow"
-              style={{ boxShadow: "5px 5px #D7E8DA", height: "20px" }}
-            >
-              FOLLOW
-            </Button>
+            {followButton}
           </Col>
           <Col xs="1" md="3" lg="4"></Col>
         </Row>
@@ -165,12 +238,8 @@ function ScreenSearchUserProfile(props) {
               <p className="Text2">
                 {userInfo ? userInfo.recoList.length : "Loading..."} RECO
               </p>
-              <p className="Text2">
-                {userInfo ? userInfo.followers.length : "Loading..."} FOLLOWERS
-              </p>
-              <p className="Text2">
-                {userInfo ? userInfo.followed.length : "Loading..."} FOLLOWING
-              </p>
+              <p className="Text2">{followersCount} FOLLOWERS</p>
+              <p className="Text2">{followedCount} FOLLOWED</p>
             </div>
           </Col>
           <Col xs="1" md="3" lg="4"></Col>

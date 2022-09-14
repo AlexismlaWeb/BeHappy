@@ -368,4 +368,68 @@ router.get("/getAllUsers", async function (req, res, next) {
   res.json(users);
 });
 
+//FOLLOW//
+router.post("/follow", async function (req, res, next) {
+  let result = false;
+  let savedConnectedUser = {};
+  let savedInfluencer = {};
+
+  let connectedUser = await userModel.findOne({
+    token: req.body.tokenFromFront,
+  });
+
+  let influencer = await userModel.findOne({
+    _id: req.body.influencerIdFromFront,
+  });
+
+  // ADD CONNECTEDUSERID IN INFLUENCER'S LIST
+  influencer.followers.push(connectedUser._id);
+  savedInfluencer = await influencer.save();
+
+  // ADD INFLUENCERID IN CONNECTEDUSER'S LIST
+  connectedUser.followed.push(influencer._id);
+  savedConnectedUser = await connectedUser.save();
+
+  if (savedInfluencer && savedConnectedUser) {
+    result = true;
+  }
+
+  res.json({ result, savedInfluencer, savedConnectedUser });
+});
+
+//UNFOLLOW//
+router.post("/unfollow", async function (req, res, next) {
+  let result = false;
+  let savedConnectedUser = {};
+  let savedInfluencer = {};
+
+  let connectedUser = await userModel.findOne({
+    token: req.body.tokenFromFront,
+  });
+
+  let influencer = await userModel.findOne({
+    _id: req.body.influencerIdFromFront,
+  });
+
+  // DELETE CONNECTEDUSERID IN INFLUENCER'S LIST
+  let copyInfluencerList = influencer.followers.filter(
+    (e) => e != connectedUser._id
+  );
+  influencer.followers = copyInfluencerList;
+  savedInfluencer = await influencer.save();
+
+  // DELETE INFLUENCERID IN CONNECTEDUSER'S LIST
+  let copyConnectedUserList = connectedUser.followed.filter(
+    (e) => e != influencer._id
+  );
+  connectedUser.followed = copyConnectedUserList;
+  savedConnectedUser = await connectedUser.save();
+
+  if (savedInfluencer && savedConnectedUser) {
+    result = true;
+  }
+
+  res.json({ result, savedInfluencer, savedConnectedUser });
+});
+
 module.exports = router;
