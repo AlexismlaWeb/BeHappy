@@ -27,6 +27,22 @@ function ScreenSearchUserProfile(props) {
           "/getUserInfoByToken/" + props.history.location.state.user.token
         );
         const body = await data.json();
+        if (body) {
+          for (let i = 0; i < body.user.recoList.length; i++) {
+            if (
+              (body.user.recoList[i].imageUrl.includes("null") &&
+                body.user.recoList[i].category === "Movie") ||
+              body.user.recoList[i].category === "Film"
+            ) {
+              body.user.recoList[i].imageUrl = "../movie.jpg";
+            } else if (
+              body.user.recoList[i].imageUrl.includes("null") &&
+              body.user.recoList[i].category === "Serie"
+            ) {
+              body.user.recoList[i].imageUrl = "../series.png";
+            }
+          }
+        }
 
         // RECUP INFOS DU USER CONNECTE
         console.log("props.token", props.token);

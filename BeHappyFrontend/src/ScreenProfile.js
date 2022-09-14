@@ -26,8 +26,17 @@ function ScreenProfile(props) {
         const body = await data.json();
         if (body) {
           for (let i = 0; i < body.user.recoList.length; i++) {
-            if (body.user.recoList[i].imageUrl.includes("null")) {
-              body.user.recoList[i].imageUrl = "../alexisphoto.jpg";
+            if (
+              (body.user.recoList[i].imageUrl.includes("null") &&
+                body.user.recoList[i].category === "Movie") ||
+              body.user.recoList[i].category === "Film"
+            ) {
+              body.user.recoList[i].imageUrl = "../movie.jpg";
+            } else if (
+              body.user.recoList[i].imageUrl.includes("null") &&
+              body.user.recoList[i].category === "Serie"
+            ) {
+              body.user.recoList[i].imageUrl = "../series.png";
             }
           }
           props.addUserInfo(body.user);
